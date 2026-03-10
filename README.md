@@ -46,7 +46,7 @@ The project is currently in the planning phase. The team will begin designing th
 
 | Name            | Student ID |
 | --------------- | ---------- |
-| Youssef Zanhome | 241005000  |
+| Youssef Ahmed Zanhome | 241005000  |
 
 
 ## Repository Purpose
