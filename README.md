@@ -1,75 +1,72 @@
 # FixNow – Home Services Web Application
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Status-In%20Progress-yellow?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/Status-Under%20Development-yellow?style=for-the-badge"/>
   <img src="https://img.shields.io/badge/Version-v1.0-blue?style=for-the-badge"/>
-  <img src="https://img.shields.io/badge/Release-Initial%20Architecture-important?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/Architecture-MVC-blue?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/Layered-Design-lightgrey?style=for-the-badge"/>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"/>
-  <img src="https://img.shields.io/badge/MVC-Architecture-blue?style=for-the-badge"/>
-  <img src="https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white"/>
-  <img src="https://img.shields.io/badge/JSP-View%20Layer-orange?style=for-the-badge"/>
-  <img src="https://img.shields.io/badge/JDBC-Data%20Access-007396?style=for-the-badge&logo=java&logoColor=white"/>
-  <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Java-Backend-orange?style=for-the-badge&logo=openjdk&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Servlets-Controller-grey?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/Spring%20Boot-Basic%20Setup-green?style=for-the-badge&logo=springboot&logoColor=white"/>
+  <img src="https://img.shields.io/badge/JSP-View-orange?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/JDBC-Data%20Access-blue?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/MySQL-Database-blue?style=for-the-badge&logo=mysql&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Maven-Build-red?style=for-the-badge&logo=apachemaven&logoColor=white"/>
 </p>
-
----
-
-## ⚠️ Note
-
-This project is currently under development and represents **Version 1.0 (Initial Architecture Setup)**.
-It is **not the final version**.
-
-The current release focuses on building the system structure using Spring Boot and applying MVC principles.
-Further features and improvements will be implemented in upcoming versions.
 
 ---
 
 ## 📌 Overview
 
-FixNow is a Java-based web application for home emergency services.
-
-It connects customers with technicians for services such as:
+**FixNow** is a web-based application designed to connect users with technicians for home services such as:
 
 * Plumbing
-* Electricity
-* AC Repair
+* Electrical maintenance
+* Air conditioning repair
 * Locksmith services
 
-The system is designed using **Spring Boot** with a layered MVC-based architecture to ensure clean code separation and scalability.
+The project is being developed as part of the **Advanced Programming Applications course**.
+
+---
+
+## ⚠️ Project Status
+
+This project is currently **under development**.
+
+* The current version focuses on **building the system structure**
+* Core features are implemented partially
+* More functionality will be added in future updates
 
 ---
 
 ##  Architecture
 
-The project follows **Layered MVC Architecture**:
+The system is designed using the **MVC (Model-View-Controller) architecture**:
 
-* **Controller Layer** → Handles HTTP requests
-* **Service Layer** → Contains business logic
-* **Repository Layer** → Handles database operations (JDBC)
-* **Model Layer** → Represents entities
-* **View Layer** → JSP pages (UI)
+* **Model** → Represents data and database interaction
+* **View** → JSP pages for user interface
+* **Controller** → Handles requests using Servlets / Spring Controllers
 
 ---
 
-##  System Flow
+## 🔄 System Flow
 
-User → JSP → Controller → Service → Repository → Database → Response → JSP
+User → View (JSP) → Controller → Model → Database → Response → View
 
 ---
 
-##  Tech Stack
+##  Technologies Used
 
 * Java
-* Spring Boot
-* Maven
+* Servlets
+* Spring Boot (basic setup)
 * JSP
 * JDBC
 * MySQL
-* MVC Architecture
+* Maven
 
 ---
 
@@ -99,45 +96,29 @@ src/main/webapp/WEB-INF/jsp
 
 ---
 
-##  Current Features
+##  Current Progress
 
-* User Registration & Login
-* Service Request Creation
-* Request Tracking
-* Technician Interaction
-* Review System (structure prepared)
-
----
-
-##  How to Run
-
-1. Clone the repository
-2. Open in Eclipse or IntelliJ
-3. Configure MySQL database
-4. Update application.properties
-5. Run the Spring Boot application
+* Basic project structure created
+* MVC architecture applied
+* Initial JSP pages implemented
+* Database connection using JDBC (basic setup)
 
 ---
 
-##  Release
+##  Future Work
 
-This repository includes **FixNow v1.0 – Initial Architecture Setup**
-
----
-
-##  Future Improvements
-
-* Complete Service Layer Logic
-* Full Repository Integration
-* UI Enhancements
-* Input Validation
-* Error Handling
-* Full System Integration
+* Complete Service Layer logic
+* Improve database integration
+* Add validation and error handling
+* Enhance UI
+* Complete system functionality
 
 ---
 
 ##  Notes
 
-* This version focuses on architecture, not full functionality
-* The project follows course-based implementation using Spring Boot and MVC
-* Future versions will expand features and improve system performance
+* This version focuses on **understanding architecture and concepts**
+* Implementation is still in progress
+* The project will evolve as more topics are covered in the course
+
+---
