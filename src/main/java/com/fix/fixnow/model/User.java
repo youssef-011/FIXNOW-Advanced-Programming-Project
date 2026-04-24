@@ -58,5 +58,7 @@ public class User {
         this.role = role;
     }
 
-    
+     public static void main(String[] args) {
+        System.out.println("Java is working [OK]");
+    }
 }
