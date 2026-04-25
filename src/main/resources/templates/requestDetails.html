@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} ?: 'Request Details - FixNow'">Request Details - FixNow</title>
+    <link rel="stylesheet" th:href="@{/css/fixnow-theme.css}" href="../static/css/fixnow-theme.css">
+</head>
+<body>
+<div th:replace="~{layout/topbar-core :: topbarCore('customer')}">
+    <header class="site-topbar">
+        <a class="brand-lockup" href="#"><span class="brand-symbol">FN</span><span><strong>FixNow</strong><small>Fast home emergency services</small></span></a>
+    </header>
+</div>
+
+<main class="page-shell section-stack">
+    <div th:replace="~{layout/nav-bridge :: navBridge('Track Request', 'Request information is neutral until controller data is available.', 'Request details')}">
+        <section class="page-bridge">
+            <h1>Track Request</h1>
+        </section>
+    </div>
+
+    <section class="hero-panel dashboard-hero">
+        <div>
+            <p class="eyebrow">Current request</p>
+            <h1 th:text="${requestTitle} ?: 'Request not selected'">Request not selected</h1>
+            <p class="lead" th:text="${requestDescription} ?: 'No description provided'">No description provided</p>
+        </div>
+        <span class="status-badge status-waiting" th:text="${requestStatus} ?: 'Pending'">Pending</span>
+    </section>
+
+    <section class="details-layout">
+        <article class="timeline-panel">
+            <p class="eyebrow">Tracking</p>
+            <h2>Status timeline</h2>
+            <div class="neutral-track">
+                <span class="service-icon is-soft">0</span>
+                <h3 th:text="${trackingState} ?: 'No tracking updates yet'">No tracking updates yet</h3>
+                <p class="muted">Tracking events will appear after the request is saved and assigned.</p>
+                <ol class="timeline">
+                    <li class="is-muted"><span class="timeline-dot" aria-hidden="true"></span><div><strong>Pending</strong><p class="muted">Waiting for controller-provided request status.</p></div></li>
+                </ol>
+            </div>
+        </article>
+
+        <aside class="technician-card">
+            <p class="eyebrow">Assigned technician</p>
+            <span class="service-icon is-soft">TECH</span>
+            <h2 th:text="${technicianName} ?: 'Not assigned yet'">Not assigned yet</h2>
+            <p class="muted" th:text="${technicianSkill} ?: 'Technician details will appear after assignment.'">Technician details will appear after assignment.</p>
+            <dl class="summary-list">
+                <div><dt>Distance</dt><dd th:text="${technicianDistance} ?: 'Not assigned yet'">Not assigned yet</dd></div>
+                <div><dt>Rating</dt><dd th:text="${technicianRating} ?: 'Not assigned yet'">Not assigned yet</dd></div>
+            </dl>
+        </aside>
+    </section>
+
+    <section class="grid grid-2">
+        <article class="summary-panel">
+            <p class="eyebrow">Request summary</p>
+            <h2>Service details</h2>
+            <dl class="summary-list">
+                <div><dt>Request number</dt><dd th:text="${requestId} ?: 'Pending'">Pending</dd></div>
+                <div><dt>Category</dt><dd th:text="${requestCategory} ?: 'Pending'">Pending</dd></div>
+                <div><dt>Urgency</dt><dd><span class="status-badge status-waiting" th:text="${requestUrgency} ?: 'Pending'">Pending</span></dd></div>
+                <div><dt>Location</dt><dd th:text="${requestLocation} ?: 'No location provided'">No location provided</dd></div>
+            </dl>
+        </article>
+
+        <article class="summary-panel">
+            <p class="eyebrow">Actions</p>
+            <h2>Next step</h2>
+            <p class="muted">Create a request first, then this page can display status and assignment data.</p>
+            <div class="button-row">
+                <a class="btn" th:href="@{/createRequest}" href="createRequest.html">Create request</a>
+                <a class="btn-secondary" th:href="@{/customerDashboard}" href="customerDashboard.html">Back to dashboard</a>
+            </div>
+        </article>
+    </section>
+</main>
+
+<div th:replace="~{layout/base-footer :: baseFooter}">
+    <footer class="site-footer"><p>FixNow Spring Boot MVC view layer.</p></footer>
+</div>
+<script th:src="@{/js/fixnow-ui.js}" src="../static/js/fixnow-ui.js"></script>
+</body>
+</html>
