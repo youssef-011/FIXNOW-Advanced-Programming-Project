@@ -1,9 +1,16 @@
 package com.fix.fixnow.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class ServiceRequestDTO {
     private Long id;
+
+    @NotBlank
     private String description;
     private String status;
+
+    @NotNull
     private Long userId;
     private Long technicianId;
 

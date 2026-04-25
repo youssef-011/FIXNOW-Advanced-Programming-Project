@@ -2,9 +2,64 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Details</title>
+    <link rel="stylesheet" href="/app.css">
 </head>
 <body>
+<div class="page">
+    <div id="nav"></div>
+    <div class="panel">
+        <div class="hero">
+            <h1>Request details</h1>
+            <div class="muted">Quick read-only view driven by request id in the URL.</div>
+        </div>
+        <div id="flash" class="flash"></div>
+        <div id="details"></div>
+    </div>
+</div>
+<script src="/app.js"></script>
+<script>
+    const user = requireUser(["CUSTOMER", "ADMIN", "TECHNICIAN"]);
+    document.getElementById("nav").innerHTML = navMarkup(user);
 
+    async function loadDetails() {
+        const id = new URLSearchParams(window.location.search).get("id");
+        if (!id) {
+            showFlash("flash", "Missing request id in URL");
+            return;
+        }
+
+        try {
+            const requests = user.role === "ADMIN"
+                ? await apiFetch("/api/admin/requests")
+                : user.role === "CUSTOMER"
+                    ? await apiFetch(`/api/customer/${user.id}/requests`)
+                    : await apiFetch("/api/technicians/requests/available");
+
+            const request = requests.find((item) => String(item.id) === String(id));
+            if (!request) {
+                showFlash("flash", "Request not found");
+                return;
+            }
+
+            document.getElementById("details").innerHTML = `
+                <div class="item">
+                    <div class="item-head">
+                        <strong>Request #${request.id}</strong>
+                        <span class="badge">${escapeHtml(request.status || "")}</span>
+                    </div>
+                    <div>${escapeHtml(request.description || "")}</div>
+                    <div class="muted" style="margin-top: 10px;">Customer ID: ${request.userId ?? "N/A"}</div>
+                    <div class="muted" style="margin-top: 6px;">Technician ID: ${request.technicianId ?? "Unassigned"}</div>
+                </div>
+            `;
+        } catch (error) {
+            showFlash("flash", error.message);
+        }
+    }
+
+    loadDetails();
+</script>
 </body>
 </html>

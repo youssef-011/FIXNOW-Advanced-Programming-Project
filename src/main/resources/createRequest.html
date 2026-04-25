@@ -2,9 +2,53 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Request</title>
+    <link rel="stylesheet" href="/app.css">
 </head>
 <body>
+<div class="page">
+    <div id="nav"></div>
+    <div class="auth-shell" style="max-width: 700px;">
+        <div class="hero">
+            <h1>Create service request</h1>
+            <div class="muted">Describe the issue and send it into the queue.</div>
+        </div>
+        <div id="flash" class="flash"></div>
+        <form id="requestForm">
+            <div class="field">
+                <label for="description">Problem description</label>
+                <textarea id="description" required></textarea>
+            </div>
+            <div class="actions">
+                <button type="submit">Submit request</button>
+                <a class="button secondary" href="/customerDashboard.html">Back</a>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="/app.js"></script>
+<script>
+    const user = requireUser(["CUSTOMER"]);
+    document.getElementById("nav").innerHTML = navMarkup(user);
 
+    document.getElementById("requestForm").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        clearFlash("flash");
+        try {
+            await apiFetch("/api/customer/requests", {
+                method: "POST",
+                body: JSON.stringify({
+                    description: document.getElementById("description").value.trim(),
+                    userId: user.id
+                })
+            });
+            showFlash("flash", "Request created successfully.", "success");
+            document.getElementById("requestForm").reset();
+        } catch (error) {
+            showFlash("flash", error.message);
+        }
+    });
+</script>
 </body>
 </html>

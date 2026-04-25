@@ -2,9 +2,96 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIXNOW Technician Dashboard</title>
+    <link rel="stylesheet" href="/app.css">
 </head>
 <body>
+<div class="page">
+    <div id="nav"></div>
+    <div class="grid two">
+        <section class="panel">
+            <div class="hero">
+                <h1>Technician dashboard</h1>
+                <div class="muted">Accept open requests and mark your work complete.</div>
+            </div>
+            <div id="flash" class="flash"></div>
+            <div id="availableRequests" class="list"></div>
+        </section>
+        <section class="panel">
+            <div class="hero">
+                <h2>My profile</h2>
+            </div>
+            <div id="profile" class="list"></div>
+        </section>
+    </div>
+</div>
+<script src="/app.js"></script>
+<script>
+    const user = requireUser(["TECHNICIAN"]);
+    document.getElementById("nav").innerHTML = navMarkup(user);
 
+    async function loadDashboard() {
+        clearFlash("flash");
+        try {
+            const [requests, profile] = await Promise.all([
+                apiFetch("/api/technicians/requests/available"),
+                apiFetch(`/api/technicians/${user.id}`)
+            ]);
+
+            document.getElementById("availableRequests").innerHTML = requests.length ? requests.map((request) => `
+                <div class="item">
+                    <div class="item-head">
+                        <strong>Request #${request.id}</strong>
+                        <span class="badge">${escapeHtml(request.status || "")}</span>
+                    </div>
+                    <div>${escapeHtml(request.description || "")}</div>
+                    <div class="muted" style="margin: 10px 0;">Customer ID: ${request.userId ?? "N/A"}</div>
+                    <div class="actions">
+                        <button type="button" onclick="acceptRequest(${request.id})">Accept</button>
+                        <button type="button" class="secondary" onclick="completeRequest(${request.id})">Complete</button>
+                    </div>
+                </div>
+            `).join("") : '<div class="empty">No available requests right now.</div>';
+
+            document.getElementById("profile").innerHTML = `
+                <div class="item">
+                    <div class="item-head">
+                        <strong>${escapeHtml(profile.name || user.name || "Technician")}</strong>
+                        <span class="badge">ID ${profile.id}</span>
+                    </div>
+                    <div>Skill: ${escapeHtml(profile.skill || "N/A")}</div>
+                    <div class="muted" style="margin-top: 8px;">Available: ${profile.available} | Rating: ${profile.rating ?? 0}</div>
+                </div>
+            `;
+        } catch (error) {
+            showFlash("flash", error.message);
+        }
+    }
+
+    async function acceptRequest(requestId) {
+        clearFlash("flash");
+        try {
+            await apiFetch(`/api/technicians/${user.id}/requests/${requestId}/accept`, { method: "POST" });
+            showFlash("flash", "Request accepted.", "success");
+            loadDashboard();
+        } catch (error) {
+            showFlash("flash", error.message);
+        }
+    }
+
+    async function completeRequest(requestId) {
+        clearFlash("flash");
+        try {
+            await apiFetch(`/api/technicians/requests/${requestId}/complete`, { method: "POST" });
+            showFlash("flash", "Request completed.", "success");
+            loadDashboard();
+        } catch (error) {
+            showFlash("flash", error.message);
+        }
+    }
+
+    loadDashboard();
+</script>
 </body>
 </html>

@@ -32,7 +32,7 @@ public class CustomerService {
     }
 
     public List<ServiceRequest> getMyRequests(Long customerId) {
-        return serviceRequestRepo.findByCustomerId(customerId);
+        return serviceRequestRepo.findByUserId(customerId);
     }
 
     public Review addReview(Review review) {

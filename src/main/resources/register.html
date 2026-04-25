@@ -2,9 +2,67 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIXNOW Register</title>
+    <link rel="stylesheet" href="/app.css">
 </head>
 <body>
-
+<div class="page">
+    <div class="auth-shell">
+        <div class="hero">
+            <h1>Create account</h1>
+            <div class="muted">Register as customer, technician, or admin for local testing.</div>
+        </div>
+        <div id="flash" class="flash"></div>
+        <form id="registerForm">
+            <div class="field">
+                <label for="name">Name</label>
+                <input id="name" type="text" required>
+            </div>
+            <div class="field">
+                <label for="email">Email</label>
+                <input id="email" type="email" required>
+            </div>
+            <div class="field">
+                <label for="password">Password</label>
+                <input id="password" type="password" required>
+            </div>
+            <div class="field">
+                <label for="role">Role</label>
+                <select id="role" required>
+                    <option value="CUSTOMER">Customer</option>
+                    <option value="TECHNICIAN">Technician</option>
+                    <option value="ADMIN">Admin</option>
+                </select>
+            </div>
+            <div class="actions">
+                <button type="submit">Register</button>
+                <a class="button secondary" href="/login.html">Back to login</a>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="/app.js"></script>
+<script>
+    document.getElementById("registerForm").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        clearFlash("flash");
+        try {
+            const user = await apiFetch("/api/auth/register", {
+                method: "POST",
+                body: JSON.stringify({
+                    name: document.getElementById("name").value.trim(),
+                    email: document.getElementById("email").value.trim(),
+                    password: document.getElementById("password").value,
+                    role: document.getElementById("role").value
+                })
+            });
+            saveCurrentUser(user);
+            window.location.href = dashboardForRole(user.role);
+        } catch (error) {
+            showFlash("flash", error.message);
+        }
+    });
+</script>
 </body>
 </html>

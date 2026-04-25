@@ -2,9 +2,57 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIXNOW Customer Dashboard</title>
+    <link rel="stylesheet" href="/app.css">
 </head>
 <body>
+<div class="page">
+    <div id="nav"></div>
+    <div class="panel">
+        <div class="hero">
+            <h1>Customer dashboard</h1>
+            <div class="muted">Create service requests, track progress, and leave reviews.</div>
+        </div>
+        <div class="actions" style="margin-bottom: 20px;">
+            <a class="button" href="/createRequest.html">New request</a>
+            <a class="button secondary" href="/addReview.html">Add review</a>
+        </div>
+        <div id="flash" class="flash"></div>
+        <div class="section-title">My requests</div>
+        <div id="requests" class="list" style="margin-top: 16px;"></div>
+    </div>
+</div>
+<script src="/app.js"></script>
+<script>
+    const user = requireUser(["CUSTOMER"]);
+    document.getElementById("nav").innerHTML = navMarkup(user);
 
+    async function loadRequests() {
+        clearFlash("flash");
+        try {
+            const requests = await apiFetch(`/api/customer/${user.id}/requests`);
+            const container = document.getElementById("requests");
+            if (!requests.length) {
+                container.innerHTML = '<div class="empty">No requests yet. Create your first one.</div>';
+                return;
+            }
+            container.innerHTML = requests.map((request) => `
+                <div class="item">
+                    <div class="item-head">
+                        <strong>Request #${request.id}</strong>
+                        <span class="badge">${escapeHtml(request.status || "UNKNOWN")}</span>
+                    </div>
+                    <div>${escapeHtml(request.description || "")}</div>
+                    <div class="muted" style="margin-top: 10px;">Technician ID: ${request.technicianId ?? "Not assigned yet"}</div>
+                </div>
+            `).join("");
+        } catch (error) {
+            showFlash("flash", error.message);
+        }
+    }
+
+    loadRequests();
+</script>
 </body>
 </html>

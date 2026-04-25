@@ -31,7 +31,12 @@ public class TechnicianService {
     public ServiceRequest acceptRequest(Long requestId, Long technicianId) {
         ServiceRequest request = serviceRequestRepo.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Sorry your order is currently unavailable, please wait"));
-        request.setTechnicianId(technicianId);
+
+        Technician technician = technicianRepo.findById(technicianId)
+                .orElseThrow(() -> new RuntimeException("Technicians are currently busy"));
+
+        request.setTechnician(technician);
+        technician.setAvailable(false);
         request.setStatus("ACCEPTED");
         return serviceRequestRepo.save(request);
     }
@@ -40,6 +45,10 @@ public class TechnicianService {
     public ServiceRequest completeRequest(Long requestId) {
         ServiceRequest request = serviceRequestRepo.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Sorry your order is currently unavailable, please wait"));
+
+        if (request.getTechnician() != null) {
+            request.getTechnician().setAvailable(true);
+        }
         request.setStatus("COMPLETED");
         return serviceRequestRepo.save(request);
     }

@@ -1,10 +1,24 @@
 package com.fix.fixnow.dto;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class ReviewDTO {
     private Long id;
+
+    @Min(1)
+    @Max(5)
     private int rating;
+
+    @NotBlank
     private String comment;
+
+    @NotNull
     private Long userId;
+
+    @NotNull
     private Long technicianId;
 
     public ReviewDTO() {

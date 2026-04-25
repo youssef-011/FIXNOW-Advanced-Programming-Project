@@ -34,7 +34,8 @@ public class DispatchService {
         Technician technician = technicianRepo.findById(technicianId)
                 .orElseThrow(() -> new RuntimeException("Technicians are currently busy"));
 
-        request.setTechnicianId(technician.getId());
+        request.setTechnician(technician);
+        technician.setAvailable(false);
         request.setStatus("ASSIGNED");
         return serviceRequestRepo.save(request);
     }

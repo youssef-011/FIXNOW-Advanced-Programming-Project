@@ -1,19 +1,9 @@
-# Java
-*.class
-*.jar
-*.war
-*.ear
+.idea/
 *.iml
-/.idea/
-/target/
-/out/
-
-# HTML / CSS / JS
-node_modules/
-*.log
-/dist/
-/*.tmp
-
-# SQL
-*.db
-*.sql~
+.vscode/
+target/
+.mvn/wrapper/maven-wrapper.jar
+.m2-local/
+data/
+spring-boot.out.log
+spring-boot.err.log
