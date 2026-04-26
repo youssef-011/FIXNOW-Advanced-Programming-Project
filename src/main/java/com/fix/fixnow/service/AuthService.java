@@ -12,7 +12,7 @@ import java.util.Optional;
 public class AuthService {
 
     private final UserRepo userRepo;
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder; //encryption password
 
     public AuthService(UserRepo userRepo, PasswordEncoder passwordEncoder) {
         this.userRepo = userRepo;
@@ -21,7 +21,7 @@ public class AuthService {
 
 
     public User register(User user) {
-        if (userRepo.findByEmail(user.getEmail()).isPresent()) {
+        if (userRepo.findByEmail(user.getEmail()).isPresent()) {     //find el email mawgod wala la
             throw new BadRequestException("Email already exists");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));

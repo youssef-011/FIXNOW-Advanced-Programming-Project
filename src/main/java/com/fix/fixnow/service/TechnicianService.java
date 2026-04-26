@@ -24,7 +24,7 @@ public class TechnicianService {
 
 
     public List<ServiceRequest> getAvailableRequests() {
-        return serviceRequestRepo.findByStatus("Waiting");
+        return serviceRequestRepo.findByStatus("Panding");
     }
 
 

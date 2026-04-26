@@ -47,6 +47,6 @@ public class DispatchService {
 
 
     public List<ServiceRequest> getPendingRequests() {
-        return serviceRequestRepo.findByStatus("Waiting");
+        return serviceRequestRepo.findByStatus("Panding");
     }
 }

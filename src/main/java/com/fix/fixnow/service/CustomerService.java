@@ -27,15 +27,12 @@ public class CustomerService {
     }
 
     public ServiceRequest createRequest(ServiceRequest request) {
-        request.setStatus("Waiting");
+        request.setStatus("Panding");
         return serviceRequestRepo.save(request);
     }
 
-    public List<ServiceRequest> getMyRequests(Long customerId) {
-        return serviceRequestRepo.findByUserId(customerId);
-    }
 
-    public Review addReview(Review review) {
-        return reviewRepo.save(review);
+    public List<ServiceRequest> getMyRequests(Long customerId) {
+        return serviceRequestRepo.findByUser_Id(customerId);
     }
 }
