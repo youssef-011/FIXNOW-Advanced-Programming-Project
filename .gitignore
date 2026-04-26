@@ -7,3 +7,9 @@ target/
 data/
 spring-boot.out.log
 spring-boot.err.log
+
+# IDE/local files
+.classpath
+.project
+.settings/
+HELP-local-backup.md
