@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<section class="page-bridge" th:fragment="navBridge(title, subtitle, currentLabel)">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a th:href="@{/}" href="../login.html">FixNow</a>
+        <span aria-hidden="true">/</span>
+        <span th:text="${currentLabel} ?: 'Current page'">Current page</span>
+    </nav>
+    <div class="page-title-row">
+        <div>
+            <p class="eyebrow">Service booking platform</p>
+            <h1 th:text="${title} ?: 'FixNow'">FixNow</h1>
+            <p th:text="${subtitle} ?: 'Modern view prepared for Spring MVC rendering.'">
+                Modern view prepared for Spring MVC rendering.
+            </p>
+        </div>
+    </div>
+</section>
+</body>
+</html>

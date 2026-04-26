@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} ?: 'Register - FixNow'">Register - FixNow</title>
+    <link rel="stylesheet" th:href="@{/css/fixnow-theme.css}" href="../static/css/fixnow-theme.css">
+</head>
+<body>
+<div th:replace="~{layout/topbar-core :: topbarCore('register')}">
+    <header class="site-topbar">
+        <a class="brand-lockup" href="#"><span class="brand-symbol">FN</span><span><strong>FixNow</strong><small>Fast home emergency services</small></span></a>
+    </header>
+</div>
+
+<main class="page-shell auth-layout">
+    <section class="hero-panel">
+        <p class="eyebrow">Join FixNow</p>
+        <h1>One account for booking, repairing, or managing work.</h1>
+        <p class="lead">
+            The role selector prepares the view for customer, technician, and admin dashboards while staying presentation-only.
+        </p>
+
+        <div class="trust-grid">
+            <div class="trust-item">
+                <strong>CUSTOMER</strong>
+                <p class="muted">Book and track services.</p>
+            </div>
+            <div class="trust-item">
+                <strong>TECHNICIAN</strong>
+                <p class="muted">Accept assigned jobs.</p>
+            </div>
+            <div class="trust-item">
+                <strong>ADMIN</strong>
+                <p class="muted">Monitor platform health.</p>
+            </div>
+        </div>
+
+        <div class="home-visual" aria-hidden="true">
+            <span class="home-door"></span>
+            <span class="home-window"></span>
+            <span class="home-window-alt"></span>
+            <span class="visual-chip chip-top">Register role</span>
+            <span class="visual-chip chip-side">Open dashboard</span>
+            <span class="visual-chip chip-bottom">Start workflow</span>
+        </div>
+    </section>
+
+    <section class="form-panel" aria-labelledby="register-title">
+        <p class="eyebrow">Create profile</p>
+        <h2 id="register-title">Registration details</h2>
+        <p class="muted">Future controllers can validate these fields and decide the next page.</p>
+
+        <!-- TODO Controller: bind registration fields and provide registerMessage. -->
+        <form class="form-grid" th:action="@{/register}" action="/register" method="post">
+            <p class="form-message" th:text="${registerMessage} ?: 'Registration messages will appear here.'">
+                Registration messages will appear here.
+            </p>
+
+            <div class="field">
+                <label for="name">Full name</label>
+                <input id="name" name="name" type="text" autocomplete="name" placeholder="Your full name" required>
+            </div>
+
+            <div class="field">
+                <label for="email">Email address</label>
+                <input id="email" name="email" type="email" autocomplete="email" placeholder="name@example.com" required>
+            </div>
+
+            <div class="field">
+                <label for="phone">Phone number</label>
+                <input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="+20 100 000 0000">
+            </div>
+
+            <div class="field">
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" autocomplete="new-password" placeholder="Create a password" required>
+                <button class="btn-soft" type="button" data-password-toggle="#password">Show</button>
+            </div>
+
+            <div class="field">
+                <label for="role">Role</label>
+                <select id="role" name="role" required>
+                    <option value="">Select role</option>
+                    <option value="CUSTOMER">CUSTOMER</option>
+                    <option value="TECHNICIAN">TECHNICIAN</option>
+                    <option value="ADMIN">ADMIN</option>
+                </select>
+            </div>
+
+            <button class="btn" type="submit">Create account</button>
+        </form>
+
+        <p class="form-hint">
+            Already registered?
+            <a th:href="@{/login}" href="login.html">Go to login</a>
+        </p>
+    </section>
+</main>
+
+<div th:replace="~{layout/base-footer :: baseFooter}">
+    <footer class="site-footer"><p>FixNow Spring Boot MVC view layer.</p></footer>
+</div>
+<script th:src="@{/js/fixnow-ui.js}" src="../static/js/fixnow-ui.js"></script>
+</body>
+</html>

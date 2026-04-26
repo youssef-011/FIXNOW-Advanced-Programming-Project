@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<header class="site-topbar" th:fragment="topbarCore(activePage)">
+    <a class="brand-lockup" th:href="@{/}" href="#">
+        <span class="brand-symbol" aria-hidden="true">FN</span>
+        <span>
+            <strong th:text="${applicationName} ?: 'FixNow'">FixNow</strong>
+            <small>Fast home emergency services</small>
+        </span>
+    </a>
+
+    <button class="nav-toggle" type="button" data-nav-toggle aria-controls="primary-navigation" aria-expanded="false">
+        Menu
+    </button>
+
+    <nav id="primary-navigation" class="site-nav" data-primary-nav aria-label="Primary navigation">
+        <a class="nav-link" th:href="@{/login}" href="../login.html" th:classappend="${activePage == 'login'} ? ' is-active' : ''">Login</a>
+        <a class="nav-link" th:href="@{/register}" href="../register.html" th:classappend="${activePage == 'register'} ? ' is-active' : ''">Register</a>
+        <a class="nav-link" th:href="@{/customerDashboard}" href="../customerDashboard.html" th:classappend="${activePage == 'customer'} ? ' is-active' : ''">Customer</a>
+        <a class="nav-link" th:href="@{/technicianDashboard}" href="../technicianDashboard.html" th:classappend="${activePage == 'technician'} ? ' is-active' : ''">Technician</a>
+        <a class="nav-link" th:href="@{/adminDashboard}" href="../adminDashboard.html" th:classappend="${activePage == 'admin'} ? ' is-active' : ''">Admin</a>
+    </nav>
+
+    <div class="topbar-tools" aria-label="Display preferences">
+        <div class="segmented-control" aria-label="Language toggle">
+            <button type="button" data-lang-choice="en" aria-pressed="true">EN</button>
+            <button type="button" data-lang-choice="ar" aria-pressed="false">AR</button>
+        </div>
+        <div class="segmented-control" aria-label="Theme toggle">
+            <button type="button" data-theme-choice="light" aria-pressed="true">Light</button>
+            <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+        </div>
+    </div>
+</header>
+</body>
+</html>

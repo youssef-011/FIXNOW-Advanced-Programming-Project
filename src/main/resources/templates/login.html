@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} ?: 'Login - FixNow'">Login - FixNow</title>
+    <link rel="stylesheet" th:href="@{/css/fixnow-theme.css}" href="../static/css/fixnow-theme.css">
+</head>
+<body>
+<div th:replace="~{layout/topbar-core :: topbarCore('login')}">
+    <header class="site-topbar">
+        <a class="brand-lockup" href="#"><span class="brand-symbol">FN</span><span><strong>FixNow</strong><small>Fast home emergency services</small></span></a>
+    </header>
+</div>
+
+<main class="page-shell auth-layout">
+    <section class="hero-panel">
+        <p class="eyebrow">Emergency help, without the chaos</p>
+        <h1>Book a nearby technician and track every step.</h1>
+        <p class="lead">
+            FixNow gives customers one trusted place to request urgent home repairs, follow status, and review completed work.
+        </p>
+
+        <div class="trust-grid" aria-label="Trust highlights">
+            <div class="trust-item">
+                <strong>Fast matching</strong>
+                <p class="muted">Prepared for technician availability data.</p>
+            </div>
+            <div class="trust-item">
+                <strong>Clear tracking</strong>
+                <p class="muted">Customers can follow each request state.</p>
+            </div>
+            <div class="trust-item">
+                <strong>Service history</strong>
+                <p class="muted">Ready for future completed-request data.</p>
+            </div>
+        </div>
+
+        <div class="home-visual" aria-hidden="true">
+            <span class="home-door"></span>
+            <span class="home-window"></span>
+            <span class="home-window-alt"></span>
+            <span class="visual-chip chip-top">Emergency request</span>
+            <span class="visual-chip chip-side">Nearby technician</span>
+            <span class="visual-chip chip-bottom">Track repair</span>
+        </div>
+    </section>
+
+    <section class="form-panel" aria-labelledby="login-title">
+        <p class="eyebrow">Account access</p>
+        <h2 id="login-title">Sign in to FixNow</h2>
+        <p class="muted">Use your account to open the correct dashboard.</p>
+
+        <!-- TODO Controller: supply loginError if authentication fails. -->
+        <form class="form-grid" th:action="@{/login}" action="/login" method="post">
+            <p class="form-message form-message-error" aria-live="polite" th:text="${loginError} ?: 'Login messages will appear here.'">
+                Login messages will appear here.
+            </p>
+
+            <div class="field">
+                <label for="email">Email address</label>
+                <input id="email" name="email" type="email" autocomplete="email" placeholder="customer@example.com" required>
+            </div>
+
+            <div class="field">
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required>
+                <button class="btn-soft" type="button" data-password-toggle="#password">Show</button>
+            </div>
+
+            <button class="btn" type="submit">Login</button>
+
+            <p class="form-hint">
+                New to FixNow?
+                <a th:href="@{/register}" href="register.html">Create an account</a>
+            </p>
+        </form>
+    </section>
+</main>
+
+<div th:replace="~{layout/base-footer :: baseFooter}">
+    <footer class="site-footer"><p>FixNow Spring Boot MVC view layer.</p></footer>
+</div>
+<script th:src="@{/js/fixnow-ui.js}" src="../static/js/fixnow-ui.js"></script>
+</body>
+</html>

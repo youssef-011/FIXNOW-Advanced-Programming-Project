@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} ?: 'Add Review - FixNow'">Add Review - FixNow</title>
+    <link rel="stylesheet" th:href="@{/css/fixnow-theme.css}" href="../static/css/fixnow-theme.css">
+</head>
+<body>
+<div th:replace="~{layout/topbar-core :: topbarCore('customer')}">
+    <header class="site-topbar">
+        <a class="brand-lockup" href="#"><span class="brand-symbol">FN</span><span><strong>FixNow</strong><small>Fast home emergency services</small></span></a>
+    </header>
+</div>
+
+<main class="page-shell">
+    <div th:replace="~{layout/nav-bridge :: navBridge('Rate Your Service', 'Submit feedback after a completed request.', 'Add review')}">
+        <section class="page-bridge">
+            <h1>Rate Your Service</h1>
+        </section>
+    </div>
+
+    <section class="review-layout">
+        <article class="form-panel">
+            <p class="eyebrow">Review form</p>
+            <h2>Share your service experience</h2>
+            <p class="muted" th:text="${serviceSummary} ?: 'Service summary will appear here after a completed request is selected.'">
+                Service summary will appear here after a completed request is selected.
+            </p>
+
+            <!-- TODO Controller: receive rating and comment values when review submission is implemented. -->
+            <form class="form-grid" th:action="@{/addReview}" action="/addReview" method="post">
+                <p class="form-message" th:text="${reviewMessage} ?: 'Review messages will appear here.'">
+                    Review messages will appear here.
+                </p>
+
+                <fieldset class="field rating-control">
+                    <legend>Rating</legend>
+                    <label><input data-rating-input type="radio" name="rating" value="1" required>1</label>
+                    <label><input data-rating-input type="radio" name="rating" value="2">2</label>
+                    <label><input data-rating-input type="radio" name="rating" value="3">3</label>
+                    <label><input data-rating-input type="radio" name="rating" value="4">4</label>
+                    <label><input data-rating-input type="radio" name="rating" value="5">5</label>
+                </fieldset>
+                <p class="form-hint">Selected rating: <span data-rating-output>Not selected</span></p>
+
+                <div class="field">
+                    <label for="comment">Comment</label>
+                    <textarea id="comment" name="comment" placeholder="Tell us about timing, quality, communication, and trust." required></textarea>
+                </div>
+
+                <div class="button-row">
+                    <button class="btn" type="submit">Submit review</button>
+                    <a class="btn-secondary" th:href="@{/requestDetails}" href="requestDetails.html">Back to request</a>
+                </div>
+            </form>
+        </article>
+
+        <aside class="empty-state">
+            <span class="service-icon is-soft">REV</span>
+            <h3>No completed service selected</h3>
+            <p class="muted">When a completed request is selected, review context can be shown here with controller-provided values.</p>
+        </aside>
+    </section>
+</main>
+
+<div th:replace="~{layout/base-footer :: baseFooter}">
+    <footer class="site-footer"><p>FixNow Spring Boot MVC view layer.</p></footer>
+</div>
+<script th:src="@{/js/fixnow-ui.js}" src="../static/js/fixnow-ui.js"></script>
+</body>
+</html>

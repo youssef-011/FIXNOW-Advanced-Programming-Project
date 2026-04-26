@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} ?: 'Admin Dashboard - FixNow'">Admin Dashboard - FixNow</title>
+    <link rel="stylesheet" th:href="@{/css/fixnow-theme.css}" href="../static/css/fixnow-theme.css">
+</head>
+<body>
+<div th:replace="~{layout/topbar-core :: topbarCore('admin')}">
+    <header class="site-topbar">
+        <a class="brand-lockup" href="#"><span class="brand-symbol">FN</span><span><strong>FixNow</strong><small>Fast home emergency services</small></span></a>
+    </header>
+</div>
+
+<main class="page-shell section-stack">
+    <section class="hero-panel dashboard-hero">
+        <div>
+            <p class="eyebrow">Admin operations</p>
+            <h1>Manage the FixNow service network.</h1>
+            <p class="lead">This dashboard is ready for real system metrics once controllers provide database-backed values.</p>
+        </div>
+        <span class="status-badge status-waiting" th:text="${systemStatus} ?: 'Awaiting system data'">Awaiting system data</span>
+    </section>
+
+    <section class="stats-row" aria-label="Admin system metrics">
+        <article class="stat-card">
+            <span class="metric-icon">U</span>
+            <div><strong th:text="${usersCount} ?: '0'">0</strong><span>Users</span></div>
+        </article>
+        <article class="stat-card">
+            <span class="metric-icon">T</span>
+            <div><strong th:text="${techniciansCount} ?: '0'">0</strong><span>Technicians</span></div>
+        </article>
+        <article class="stat-card">
+            <span class="metric-icon">R</span>
+            <div><strong th:text="${requestsCount} ?: '0'">0</strong><span>Requests</span></div>
+        </article>
+        <article class="stat-card">
+            <span class="metric-icon">V</span>
+            <div><strong th:text="${reviewsCount} ?: '0'">0</strong><span>Reviews</span></div>
+        </article>
+    </section>
+
+    <section class="grid grid-3" aria-label="Admin management cards">
+        <article class="action-card">
+            <span class="service-icon is-soft">USR</span>
+            <h2>User management</h2>
+            <p class="card-copy">Review registered customers, technicians, and administrators after controller integration.</p>
+            <a class="btn-secondary" th:href="@{/adminDashboard}" href="adminDashboard.html">Open users</a>
+        </article>
+        <article class="action-card">
+            <span class="service-icon is-soft">DSP</span>
+            <h2>Dispatch overview</h2>
+            <p class="card-copy">Monitor pending requests and technician matching when data becomes available.</p>
+            <a class="btn-secondary" th:href="@{/adminDashboard}" href="adminDashboard.html">Open dispatch</a>
+        </article>
+        <article class="action-card">
+            <span class="service-icon is-soft">REV</span>
+            <h2>Review quality</h2>
+            <p class="card-copy">Customer feedback and service quality indicators will appear here later.</p>
+            <a class="btn-secondary" th:href="@{/adminDashboard}" href="adminDashboard.html">Open reviews</a>
+        </article>
+    </section>
+
+    <section class="activity-panel">
+        <p class="eyebrow">Recent activity</p>
+        <h2>System activity</h2>
+        <div class="empty-state centered">
+            <span class="service-icon is-soft">0</span>
+            <h3>No activity yet</h3>
+            <p class="muted">New requests, technician actions, and reviews will appear here after real controller data is connected.</p>
+        </div>
+    </section>
+</main>
+
+<div th:replace="~{layout/base-footer :: baseFooter}">
+    <footer class="site-footer"><p>FixNow Spring Boot MVC view layer.</p></footer>
+</div>
+<script th:src="@{/js/fixnow-ui.js}" src="../static/js/fixnow-ui.js"></script>
+</body>
+</html>

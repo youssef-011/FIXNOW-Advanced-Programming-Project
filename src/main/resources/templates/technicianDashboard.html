@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} ?: 'Technician Dashboard - FixNow'">Technician Dashboard - FixNow</title>
+    <link rel="stylesheet" th:href="@{/css/fixnow-theme.css}" href="../static/css/fixnow-theme.css">
+</head>
+<body>
+<div th:replace="~{layout/topbar-core :: topbarCore('technician')}">
+    <header class="site-topbar">
+        <a class="brand-lockup" href="#"><span class="brand-symbol">FN</span><span><strong>FixNow</strong><small>Fast home emergency services</small></span></a>
+    </header>
+</div>
+
+<main class="page-shell section-stack">
+    <section class="hero-panel dashboard-hero">
+        <div>
+            <p class="eyebrow">Technician workspace</p>
+            <h1>
+                Welcome,
+                <span th:text="${technicianName} ?: 'Technician'">Technician</span>
+            </h1>
+            <p class="lead">Assigned jobs and availability controls will appear here once technician data is connected.</p>
+        </div>
+        <span class="status-badge status-waiting" th:text="${availabilityStatus} ?: 'Availability not set'">Availability not set</span>
+    </section>
+
+    <section class="availability-panel">
+        <span class="service-icon">ON</span>
+        <div>
+            <p class="eyebrow">Availability</p>
+            <h2 th:text="${availabilityStatus} ?: 'Set availability from the technician controller later'">Set availability from the technician controller later</h2>
+            <p class="muted">This panel is visual only. It does not change backend state.</p>
+        </div>
+    </section>
+
+    <section class="stats-row" aria-label="Technician job statistics">
+        <article class="stat-card">
+            <span class="metric-icon">J</span>
+            <div><strong th:text="${assignedJobsCount} ?: '0'">0</strong><span>Assigned jobs</span></div>
+        </article>
+        <article class="stat-card">
+            <span class="metric-icon">Q</span>
+            <div><strong th:text="${availableRequestsCount} ?: '0'">0</strong><span>Available requests</span></div>
+        </article>
+        <article class="stat-card">
+            <span class="metric-icon">D</span>
+            <div><strong th:text="${completedJobsCount} ?: '0'">0</strong><span>Completed jobs</span></div>
+        </article>
+        <article class="stat-card">
+            <span class="metric-icon">R</span>
+            <div><strong th:text="${reviewCount} ?: '0'">0</strong><span>Reviews</span></div>
+        </article>
+    </section>
+
+    <section class="grid grid-2">
+        <article class="action-card">
+            <span class="service-icon is-soft">JOB</span>
+            <p class="eyebrow">Assigned jobs</p>
+            <h2>No assigned jobs yet</h2>
+            <p class="card-copy">Jobs accepted or assigned by a controller will appear in this area.</p>
+            <button class="btn-secondary" type="button" disabled>Accept job</button>
+        </article>
+
+        <article class="action-card">
+            <span class="service-icon is-soft">QUEUE</span>
+            <p class="eyebrow">Job queue</p>
+            <h2>No open queue items yet</h2>
+            <p class="card-copy">Available customer requests will appear after database-backed dispatch integration.</p>
+            <button class="btn-soft" type="button" disabled>Refresh queue</button>
+        </article>
+    </section>
+</main>
+
+<div th:replace="~{layout/base-footer :: baseFooter}">
+    <footer class="site-footer"><p>FixNow Spring Boot MVC view layer.</p></footer>
+</div>
+<script th:src="@{/js/fixnow-ui.js}" src="../static/js/fixnow-ui.js"></script>
+</body>
+</html>
