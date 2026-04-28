@@ -1,3 +1,5 @@
+package com.fix.fixnow.controller;
+
 import com.fix.fixnow.model.ServiceRequest;
 import com.fix.fixnow.security.SessionAuthConstants;
 import com.fix.fixnow.service.TechnicianService;
