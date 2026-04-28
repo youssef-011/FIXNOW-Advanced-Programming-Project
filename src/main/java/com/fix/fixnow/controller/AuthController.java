@@ -2,18 +2,18 @@ package com.fix.fixnow.controller;
 
 import com.fix.fixnow.dto.LoginDTO;
 import com.fix.fixnow.dto.RegisterDTO;
-import com.fix.fixnow.dto.UserDTO;
-import com.fix.fixnow.exception.BadRequestException;
 import com.fix.fixnow.model.User;
 import com.fix.fixnow.security.SessionAuthConstants;
 import com.fix.fixnow.service.AuthService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 
-@RestController
-@RequestMapping("/api/auth")
+@Controller
 public class AuthController {
 
     private final AuthService authService;
@@ -22,57 +22,69 @@ public class AuthController {
         this.authService = authService;
     }
 
+    @GetMapping("/")
+    public String home() {
+        return "redirect:/login";
+    }
+
+    @GetMapping("/login")
+    public String loginPage() {
+        return "login";
+    }
+
+    @GetMapping("/register")
+    public String registerPage() {
+        return "register";
+    }
+
     @PostMapping("/register")
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserDTO register(@Valid @RequestBody RegisterDTO registerDTO, HttpSession session) {
+    public String register(@Valid @ModelAttribute RegisterDTO registerDTO, BindingResult bindingResult, HttpSession session) {
+        if (bindingResult.hasErrors()) {
+            return "redirect:/register?error";
+        }
+
         User user = new User();
         user.setName(registerDTO.getName());
         user.setEmail(registerDTO.getEmail());
         user.setPassword(registerDTO.getPassword());
+        user.setPhone(registerDTO.getPhone());
         user.setRole(registerDTO.getRole());
-        User savedUser = authService.register(user);
-        storeUserInSession(session, savedUser);
-        return toUserDTO(savedUser);
+
+        try {
+            User savedUser = authService.register(user);
+            storeUserInSession(session, savedUser);
+            return redirectForRole(savedUser);
+        } catch (RuntimeException ex) {
+            return "redirect:/register?error";
+        }
     }
 
     @PostMapping("/login")
-    public UserDTO login(@Valid @RequestBody LoginDTO loginDTO, HttpSession session) {
+    public String login(@Valid @ModelAttribute LoginDTO loginDTO, BindingResult bindingResult, HttpSession session) {
+        if (bindingResult.hasErrors()) {
+            return "redirect:/login?error";
+        }
+
         return authService.login(loginDTO.getEmail(), loginDTO.getPassword())
                 .map(user -> {
                     storeUserInSession(session, user);
-                    return toUserDTO(user);
+                    return redirectForRole(user);
                 })
-                .orElseThrow(() -> new BadRequestException("Invalid email or password"));
-    }
-
-    @GetMapping("/me")
-    public UserDTO me(HttpSession session) {
-        Object id = session.getAttribute(SessionAuthConstants.AUTH_USER_ID);
-        Object name = session.getAttribute(SessionAuthConstants.AUTH_NAME);
-        Object email = session.getAttribute(SessionAuthConstants.AUTH_EMAIL);
-        Object role = session.getAttribute(SessionAuthConstants.AUTH_ROLE);
-
-        if (!(id instanceof Long userId) || !(name instanceof String userName)
-                || !(email instanceof String userEmail) || !(role instanceof String userRole)) {
-            throw new BadRequestException("No active session");
-        }
-
-        UserDTO dto = new UserDTO();
-        dto.setId(userId);
-        dto.setName(userName);
-        dto.setEmail(userEmail);
-        dto.setRole(Enum.valueOf(com.fix.fixnow.model.Role.class, userRole));
-        return dto;
+                .orElse("redirect:/login?error");
     }
 
     @PostMapping("/logout")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void logout(HttpSession session) {
+    public String logout(HttpSession session) {
         session.invalidate();
+        return "redirect:/login";
     }
 
-    private UserDTO toUserDTO(User user) {
-        return new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getRole());
+    private String redirectForRole(User user) {
+        return switch (user.getRole()) {
+            case CUSTOMER -> "redirect:/customer/dashboard";
+            case TECHNICIAN -> "redirect:/technician/dashboard";
+            case ADMIN -> "redirect:/admin/dashboard";
+        };
     }
 
     private void storeUserInSession(HttpSession session, User user) {
