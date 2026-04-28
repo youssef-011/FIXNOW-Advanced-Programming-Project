@@ -1,5 +1,6 @@
 package com.fix.fixnow.service;
 
+import com.fix.fixnow.exception.BadRequestException;
 import com.fix.fixnow.model.Review;
 import com.fix.fixnow.model.ServiceRequest;
 import com.fix.fixnow.model.Technician;
@@ -32,14 +33,22 @@ public class CustomerService {
         return serviceRequestRepo.save(request);
     }
 
-
     public List<ServiceRequest> getMyRequests(Long customerId) {
         return serviceRequestRepo.findByUser_Id(customerId);
     }
 
     public Review addReview(Review review) {
-        Technician technician = review.getTechnician();
-        Technician fullTech = technicianRepo.findById(technician.getId())
+        ServiceRequest request = serviceRequestRepo
+                .findByUser_IdAndTechnician_Id(
+                        review.getUser().getId(),
+                        review.getTechnician().getId())
+                .orElseThrow(() -> new BadRequestException("No request found between this user and technician"));
+
+        if (!request.getStatus().equals("COMPLETED")) {
+            throw new BadRequestException("Request must be completed before adding a review");
+        }
+
+        Technician fullTech = technicianRepo.findById(review.getTechnician().getId())
                 .orElseThrow(() -> new RuntimeException("Technician not found"));
 
         List<Review> reviews = fullTech.getReviews();
