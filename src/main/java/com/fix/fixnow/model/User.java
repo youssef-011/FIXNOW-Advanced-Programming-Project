@@ -1,31 +1,34 @@
 package com.fix.fixnow.model;
 
 import jakarta.persistence.*;
-
 import java.util.List;
 
-@Entity // da table fel database
-@Table(name = "users") // esm el table fel mysql
+@Entity
+@Table(name = "users")
 public class User {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)   // id bytgenerate auto mn DB
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
 
-    @Column(unique = true, nullable = false) // email lazm unique w msh fady
+    @Column(unique = true, nullable = false)
     private String email;
 
     private String password;
+    private String phone;
 
-@Enumerated(EnumType.STRING) // role bytb2a string (CUSTOMER / TECHNICIAN)
-    private Role role; // CUSTOMER / TECHNICIAN
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
-    @OneToMany(mappedBy = "user") // user wa7ed y3ml kaza request
+    @OneToMany(mappedBy = "user")
     private List<ServiceRequest> requests;
 
-    @OneToMany(mappedBy = "user")  // user wa7ed y3ml kaza review
+    @OneToMany(mappedBy = "user")
     private List<Review> reviews;
+
+    public User() {}
 
     public User(Long id, String name, String email, String password, Role role) {
         this.id = id;
@@ -35,49 +38,27 @@ public class User {
         this.role = role;
     }
 
-    public User() {
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public Role getRole() {
-        return role;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public void setRole(Role role) {
-        this.role = role;
-    }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 
-    public String getPassword() {
-        return password;
-    }
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    public Role getRole() { return role; }
+    public void setRole(Role role) { this.role = role; }
 
-    public String getEmail() {
-        return email;
-    }
+    public List<ServiceRequest> getRequests() { return requests; }
+    public void setRequests(List<ServiceRequest> requests) { this.requests = requests; }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-
+    public List<Review> getReviews() { return reviews; }
+    public void setReviews(List<Review> reviews) { this.reviews = reviews; }
 }

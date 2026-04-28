@@ -4,14 +4,14 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "reviews")
-   //Review = feedback mn user 3la tech
 public class Review {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private int rating;  // 1 - 5 stars
-    private String comment;  // opinion bta3 el user
+
+    private int rating;
+    private String comment;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -21,45 +21,27 @@ public class Review {
     @JoinColumn(name = "technician_id")
     private Technician technician;
 
+    @ManyToOne
+    @JoinColumn(name = "request_id")
+    private ServiceRequest request;
+
     public Review() {}
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public int getRating() { return rating; }
+    public void setRating(int rating) { this.rating = rating; }
 
-    public int getRating() {
-        return rating;
-    }
+    public String getComment() { return comment; }
+    public void setComment(String comment) { this.comment = comment; }
 
-    public void setRating(int rating) {
-        this.rating = rating;
-    }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 
-    public String getComment() {
-        return comment;
-    }
+    public Technician getTechnician() { return technician; }
+    public void setTechnician(Technician technician) { this.technician = technician; }
 
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Technician getTechnician() {
-        return technician;
-    }
-
-    public void setTechnician(Technician technician) {
-        this.technician = technician;
-    }
+    public ServiceRequest getRequest() { return request; }
+    public void setRequest(ServiceRequest request) { this.request = request; }
 }
