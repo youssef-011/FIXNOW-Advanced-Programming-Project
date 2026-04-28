@@ -5,6 +5,7 @@ import com.fix.fixnow.model.ServiceRequest;
 import com.fix.fixnow.repository.TechnicianRepo;
 import com.fix.fixnow.repository.ServiceRequestRepo;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
@@ -21,15 +22,18 @@ public class DispatchService {
         this.technicianRepo = technicianRepo;
     }
 
-
     public List<ServiceRequest> getAllRequests() {
         return serviceRequestRepo.findAll();
     }
 
-
+    @Transactional
     public ServiceRequest assignTechnician(Long requestId, Long technicianId) {
         ServiceRequest request = serviceRequestRepo.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Sorry your order is currently unavailable, please wait"));
+
+        if (request.getTechnician() != null) {
+            throw new RuntimeException("This request is already assigned to a technician");
+        }
 
         Technician technician = technicianRepo.findById(technicianId)
                 .orElseThrow(() -> new RuntimeException("Technicians are currently busy"));
@@ -40,11 +44,9 @@ public class DispatchService {
         return serviceRequestRepo.save(request);
     }
 
-
     public List<Technician> getAvailableTechnicians() {
         return technicianRepo.findByAvailable(true);
     }
-
 
     public List<ServiceRequest> getPendingRequests() {
         return serviceRequestRepo.findByStatus("Pending");
