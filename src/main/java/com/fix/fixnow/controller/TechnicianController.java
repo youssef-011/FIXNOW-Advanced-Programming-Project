@@ -1,16 +1,15 @@
-package com.fix.fixnow.controller;
-
-import com.fix.fixnow.dto.ServiceRequestDTO;
-import com.fix.fixnow.exception.ResourceNotFoundException;
 import com.fix.fixnow.model.ServiceRequest;
-import com.fix.fixnow.model.Technician;
+import com.fix.fixnow.security.SessionAuthConstants;
 import com.fix.fixnow.service.TechnicianService;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/technicians")
+@Controller
+@RequestMapping("/technician")
 public class TechnicianController {
 
     private final TechnicianService technicianService;
@@ -19,36 +18,50 @@ public class TechnicianController {
         this.technicianService = technicianService;
     }
 
-    @GetMapping("/requests/available")
-    public List<ServiceRequestDTO> getAvailableRequests() {
-        return technicianService.getAvailableRequests().stream()
-                .map(this::toServiceRequestDTO)
-                .toList();
+    @GetMapping("/dashboard")
+    public String dashboard(HttpSession session, Model model) {
+        List<ServiceRequest> availableRequests = technicianService.getAvailableRequests();
+        model.addAttribute("availableRequests", availableRequests);
+        model.addAttribute("availableRequestsCount", availableRequests.size());
+
+        Object technicianName = session.getAttribute(SessionAuthConstants.AUTH_NAME);
+        if (technicianName != null) {
+            model.addAttribute("technicianName", technicianName);
+        }
+
+        return "technicianDashboard";
     }
 
-    @PostMapping("/{technicianId}/requests/{requestId}/accept")
-    public ServiceRequestDTO acceptRequest(@PathVariable Long technicianId, @PathVariable Long requestId) {
-        return toServiceRequestDTO(technicianService.acceptRequest(requestId, technicianId));
+    @PostMapping("/request/{id}/accept")
+    public String acceptRequest(@PathVariable("id") Long requestId, HttpSession session) {
+        Long technicianId = currentTechnicianId(session);
+        if (technicianId == null) {
+            return "redirect:/login";
+        }
+
+        technicianService.acceptRequest(requestId, technicianId);
+        return "redirect:/technician/dashboard";
     }
 
-    @PostMapping("/requests/{requestId}/complete")
-    public ServiceRequestDTO completeRequest(@PathVariable Long requestId) {
-        return toServiceRequestDTO(technicianService.completeRequest(requestId));
+    @PostMapping("/request/{id}/complete")
+    public String completeRequest(@PathVariable("id") Long requestId, HttpSession session) {
+        Long technicianId = currentTechnicianId(session);
+        if (technicianId == null) {
+            return "redirect:/login";
+        }
+
+        technicianService.completeRequest(requestId, technicianId);
+        return "redirect:/technician/dashboard";
     }
 
-    @GetMapping("/{technicianId}")
-    public Technician getProfile(@PathVariable Long technicianId) {
-        return technicianService.getTechnicianProfile(technicianId)
-                .orElseThrow(() -> new ResourceNotFoundException("Technician not found"));
-    }
-
-    private ServiceRequestDTO toServiceRequestDTO(ServiceRequest request) {
-        ServiceRequestDTO dto = new ServiceRequestDTO();
-        dto.setId(request.getId());
-        dto.setDescription(request.getDescription());
-        dto.setStatus(request.getStatus());
-        dto.setUserId(request.getUser() != null ? request.getUser().getId() : null);
-        dto.setTechnicianId(request.getTechnician() != null ? request.getTechnician().getId() : null);
-        return dto;
+    private Long currentTechnicianId(HttpSession session) {
+        Object technicianId = session.getAttribute(SessionAuthConstants.AUTH_USER_ID);
+        if (technicianId instanceof Long id) {
+            return id;
+        }
+        if (technicianId instanceof Number number) {
+            return number.longValue();
+        }
+        return null;
     }
 }
