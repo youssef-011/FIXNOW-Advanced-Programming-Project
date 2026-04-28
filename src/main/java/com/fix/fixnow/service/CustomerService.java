@@ -34,7 +34,7 @@ public class CustomerService {
 
 
     public List<ServiceRequest> getMyRequests(Long customerId) {
-        return serviceRequestRepo.findByUserId(customerId);
+        return serviceRequestRepo.findByUser_Id(customerId);
     }
 
     public Review addReview(Review review) {
@@ -43,6 +43,7 @@ public class CustomerService {
                 .orElseThrow(() -> new RuntimeException("Technician not found"));
 
         List<Review> reviews = fullTech.getReviews();
+        reviews.add(review);
         double avg = reviews.stream().mapToInt(Review::getRating).average().orElse(review.getRating());
         fullTech.setRating(avg);
         technicianRepo.save(fullTech);
