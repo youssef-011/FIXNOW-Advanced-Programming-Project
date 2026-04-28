@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,20 +19,29 @@ import java.util.List;
 public class SessionAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain
+    ) throws ServletException, IOException {
+
         HttpSession session = request.getSession(false);
+
         if (session != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+
             Object email = session.getAttribute(SessionAuthConstants.AUTH_EMAIL);
             Object role = session.getAttribute(SessionAuthConstants.AUTH_ROLE);
 
             if (email instanceof String userEmail && role instanceof String userRole) {
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userEmail,
-                        null,
-                        List.of(new SimpleGrantedAuthority("ROLE_" + userRole))
-                );
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                UsernamePasswordAuthenticationToken auth =
+                        new UsernamePasswordAuthenticationToken(
+                                userEmail,
+                                null,
+                                List.of(new SimpleGrantedAuthority("ROLE_" + userRole))
+                        );
+
+                SecurityContextHolder.getContext().setAuthentication(auth);
             }
         }
 

@@ -7,6 +7,5 @@ public final class SessionAuthConstants {
     public static final String AUTH_EMAIL = "AUTH_EMAIL";
     public static final String AUTH_NAME = "AUTH_NAME";
 
-    private SessionAuthConstants() {
-    }
+    private SessionAuthConstants() {}
 }
