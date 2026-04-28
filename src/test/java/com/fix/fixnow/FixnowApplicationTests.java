@@ -57,7 +57,7 @@ class FixnowApplicationTests {
 	void protectedEndpointRequiresSessionAndRole() throws Exception {
 		userRepo.deleteAll();
 
-		mockMvc.perform(get("/api/admin/requests"))
+		mockMvc.perform(get("/admin/dashboard"))
 				.andExpect(status().isUnauthorized());
 
 		MockHttpSession adminSession = (MockHttpSession) mockMvc.perform(post("/register")
@@ -75,7 +75,7 @@ class FixnowApplicationTests {
 
 		assertNotNull(adminSession);
 
-		mockMvc.perform(get("/api/admin/requests").session(adminSession))
+		mockMvc.perform(get("/admin/dashboard").session(adminSession))
 				.andExpect(status().isOk());
 
 		MockHttpSession customerSession = (MockHttpSession) mockMvc.perform(post("/register")
@@ -91,7 +91,7 @@ class FixnowApplicationTests {
 				.getRequest()
 				.getSession(false);
 
-		mockMvc.perform(get("/api/admin/requests").session(customerSession))
+		mockMvc.perform(get("/admin/dashboard").session(customerSession))
 				.andExpect(status().isForbidden());
 	}
 
