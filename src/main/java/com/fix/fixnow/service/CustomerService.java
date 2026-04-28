@@ -2,6 +2,7 @@ package com.fix.fixnow.service;
 
 import com.fix.fixnow.model.Review;
 import com.fix.fixnow.model.ServiceRequest;
+import com.fix.fixnow.model.Technician;
 import com.fix.fixnow.repository.*;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -33,6 +34,19 @@ public class CustomerService {
 
 
     public List<ServiceRequest> getMyRequests(Long customerId) {
-        return serviceRequestRepo.findByUser_Id(customerId);
+        return serviceRequestRepo.findByUserId(customerId);
+    }
+
+    public Review addReview(Review review) {
+        Technician technician = review.getTechnician();
+        Technician fullTech = technicianRepo.findById(technician.getId())
+                .orElseThrow(() -> new RuntimeException("Technician not found"));
+
+        List<Review> reviews = fullTech.getReviews();
+        double avg = reviews.stream().mapToInt(Review::getRating).average().orElse(review.getRating());
+        fullTech.setRating(avg);
+        technicianRepo.save(fullTech);
+
+        return reviewRepo.save(review);
     }
 }
