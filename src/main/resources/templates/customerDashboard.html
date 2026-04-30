@@ -24,8 +24,8 @@
             <p class="lead">Book home repairs, track active requests, and review completed services when real data is connected.</p>
         </div>
         <div class="button-row">
-            <a class="btn" th:href="@{/createRequest}" href="createRequest.html">Create your first request</a>
-            <a class="btn-secondary" th:href="@{/requestDetails}" href="requestDetails.html">Open tracking</a>
+            <a class="btn" th:href="@{/customer/request/new}" href="/customer/request/new">Create your first request</a>
+            <a class="btn-secondary" th:href="@{/customer/dashboard}" href="/customer/dashboard">Open tracking</a>
         </div>
     </section>
 
@@ -62,8 +62,8 @@
                 <span class="status-badge status-waiting" th:text="${activeRequestStatus} ?: 'Pending'">Pending</span>
             </div>
             <div class="button-row">
-                <a class="btn" th:href="@{/createRequest}" href="createRequest.html">Create request</a>
-                <a class="btn-secondary" th:href="@{/requestDetails}" href="requestDetails.html">View details</a>
+                <a class="btn" th:href="@{/customer/request/new}" href="/customer/request/new">Create request</a>
+                <a class="btn-secondary" th:href="@{/customer/dashboard}" href="/customer/dashboard">View details</a>
             </div>
         </article>
 
@@ -72,7 +72,7 @@
             <p class="eyebrow">Nearby technicians</p>
             <h2 th:text="${nearbyTechniciansLabel} ?: 'No technician matches yet'">No technician matches yet</h2>
             <p class="card-copy">Technician availability will appear here after controller and database integration.</p>
-            <a class="btn-secondary" th:href="@{/customerDashboard}" href="customerDashboard.html">Refresh dashboard</a>
+            <a class="btn-secondary" th:href="@{/customer/dashboard}" href="/customer/dashboard">Refresh dashboard</a>
         </article>
     </section>
 
@@ -95,7 +95,7 @@
                 <span class="service-icon is-soft">0</span>
                 <h3>No requests yet</h3>
                 <p class="muted">Your recent services will appear here after requests are saved.</p>
-                <a class="btn" th:href="@{/createRequest}" href="createRequest.html">Create your first request</a>
+                <a class="btn" th:href="@{/customer/request/new}" href="/customer/request/new">Create your first request</a>
             </div>
         </div>
     </section>

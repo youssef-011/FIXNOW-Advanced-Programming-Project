@@ -29,7 +29,7 @@
             </p>
 
             <!-- TODO Controller: receive rating and comment values when review submission is implemented. -->
-            <form class="form-grid" th:action="@{/addReview}" action="/addReview" method="post">
+            <form class="form-grid" th:action="@{/customer/review/new}" action="/customer/review/new" method="post">
                 <p class="form-message" th:text="${reviewMessage} ?: 'Review messages will appear here.'">
                     Review messages will appear here.
                 </p>
@@ -51,7 +51,7 @@
 
                 <div class="button-row">
                     <button class="btn" type="submit">Submit review</button>
-                    <a class="btn-secondary" th:href="@{/requestDetails}" href="requestDetails.html">Back to request</a>
+                    <a class="btn-secondary" th:href="@{/customer/dashboard}" href="/customer/dashboard">Back to request</a>
                 </div>
             </form>
         </article>

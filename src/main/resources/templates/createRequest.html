@@ -25,7 +25,7 @@
             <p class="eyebrow">Step 1</p>
             <h2>Choose service category</h2>
             <!-- TODO Controller: receive selected category, location, urgency, and description. -->
-            <form class="form-grid" th:action="@{/createRequest}" action="/createRequest" method="post">
+            <form class="form-grid" th:action="@{/customer/request/new}" action="/customer/request/new" method="post">
                 <p class="form-message" th:text="${requestMessage} ?: 'Request status messages will appear here.'">
                     Request status messages will appear here.
                 </p>
@@ -85,7 +85,7 @@
 
                 <div class="button-row">
                     <button class="btn" type="submit">Submit request</button>
-                    <a class="btn-secondary" th:href="@{/customerDashboard}" href="customerDashboard.html">Back to dashboard</a>
+                    <a class="btn-secondary" th:href="@{/customer/dashboard}" href="/customer/dashboard">Back to dashboard</a>
                 </div>
             </form>
         </article>

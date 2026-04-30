@@ -15,11 +15,14 @@
     </button>
 
     <nav id="primary-navigation" class="site-nav" data-primary-nav aria-label="Primary navigation">
-        <a class="nav-link" th:href="@{/login}" href="../login.html" th:classappend="${activePage == 'login'} ? ' is-active' : ''">Login</a>
-        <a class="nav-link" th:href="@{/register}" href="../register.html" th:classappend="${activePage == 'register'} ? ' is-active' : ''">Register</a>
-        <a class="nav-link" th:href="@{/customerDashboard}" href="../customerDashboard.html" th:classappend="${activePage == 'customer'} ? ' is-active' : ''">Customer</a>
-        <a class="nav-link" th:href="@{/technicianDashboard}" href="../technicianDashboard.html" th:classappend="${activePage == 'technician'} ? ' is-active' : ''">Technician</a>
-        <a class="nav-link" th:href="@{/adminDashboard}" href="../adminDashboard.html" th:classappend="${activePage == 'admin'} ? ' is-active' : ''">Admin</a>
+        <a class="nav-link" th:href="@{/login}" href="/login" th:classappend="${activePage == 'login'} ? ' is-active' : ''">Login</a>
+        <a class="nav-link" th:href="@{/register}" href="/register" th:classappend="${activePage == 'register'} ? ' is-active' : ''">Register</a>
+        <a class="nav-link" th:href="@{/customer/dashboard}" href="/customer/dashboard" th:classappend="${activePage == 'customer'} ? ' is-active' : ''">Customer</a>
+        <a class="nav-link" th:href="@{/technician/dashboard}" href="/technician/dashboard" th:classappend="${activePage == 'technician'} ? ' is-active' : ''">Technician</a>
+        <a class="nav-link" th:href="@{/admin/dashboard}" href="/admin/dashboard" th:classappend="${activePage == 'admin'} ? ' is-active' : ''">Admin</a>
+        <form th:if="${session.AUTH_EMAIL != null}" th:action="@{/logout}" action="/logout" method="post">
+            <button class="nav-link" type="submit">Logout</button>
+        </form>
     </nav>
 
     <div class="topbar-tools" aria-label="Display preferences">
