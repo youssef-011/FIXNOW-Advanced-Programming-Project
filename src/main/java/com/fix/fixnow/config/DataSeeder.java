@@ -18,44 +18,51 @@ public class DataSeeder {
         return args -> {
             seedUser(userRepo, passwordEncoder, "Admin User", "admin@fixnow.com", "admin123", "+201000000100", Role.ADMIN);
             seedUser(userRepo, passwordEncoder, "Customer User", "customer@fixnow.com", "customer123", "+201000000101", Role.CUSTOMER);
-            seedUser(userRepo, passwordEncoder, "Ahmed Plumber", "tech.plumber@fixnow.com", "tech123", "+201000000102", Role.TECHNICIAN);
-            seedUser(userRepo, passwordEncoder, "Omar Electrician", "tech.electric@fixnow.com", "tech123", "+201000000103", Role.TECHNICIAN);
+            User plumberUser = seedUser(userRepo, passwordEncoder, "Ahmed Plumber", "tech.plumber@fixnow.com", "tech123", "+201000000102", Role.TECHNICIAN);
+            User electricianUser = seedUser(userRepo, passwordEncoder, "Omar Electrician", "tech.electric@fixnow.com", "tech123", "+201000000103", Role.TECHNICIAN);
 
-            seedTechnician(technicianRepo, "Ahmed Plumber", "Plumbing");
-            seedTechnician(technicianRepo, "Omar Electrician", "Electricity");
+            seedTechnician(technicianRepo, plumberUser, "Ahmed Plumber", "Plumbing");
+            seedTechnician(technicianRepo, electricianUser, "Omar Electrician", "Electricity");
         };
     }
 
-    private void seedUser(UserRepo userRepo, PasswordEncoder passwordEncoder, String name, String email, String password, String phone, Role role) {
-        if (userRepo.findByEmail(email).isPresent()) {
-            return;
-        }
+    private User seedUser(UserRepo userRepo, PasswordEncoder passwordEncoder, String name, String email, String password, String phone, Role role) {
+        return userRepo.findByEmail(email).orElseGet(() -> {
+            User user = new User();
+            user.setName(name);
+            user.setEmail(email);
+            user.setPassword(passwordEncoder.encode(password));
+            user.setPhone(phone);
+            user.setRole(role);
 
-        User user = new User();
-        user.setName(name);
-        user.setEmail(email);
-        user.setPassword(passwordEncoder.encode(password));
-        user.setPhone(phone);
-        user.setRole(role);
-
-        userRepo.save(user);
+            return userRepo.save(user);
+        });
     }
 
-    private void seedTechnician(TechnicianRepo technicianRepo, String name, String skill) {
-        boolean exists = technicianRepo.findAll().stream()
-                .anyMatch(technician -> matches(technician.getName(), name) && matches(technician.getSkill(), skill));
-
-        if (exists) {
+    private void seedTechnician(TechnicianRepo technicianRepo, User user, String name, String skill) {
+        if (technicianRepo.findByUser_Id(user.getId()).isPresent()) {
             return;
         }
 
-        Technician technician = new Technician();
-        technician.setName(name);
-        technician.setSkill(skill);
-        technician.setAvailable(true);
-        technician.setRating(0.0);
+        Technician technician = technicianRepo.findAll().stream()
+                .filter(existingTechnician -> matches(existingTechnician.getName(), name) && matches(existingTechnician.getSkill(), skill))
+                .findFirst()
+                .orElse(null);
 
-        technicianRepo.save(technician);
+        if (technician != null) {
+            technician.setUser(user);
+            technicianRepo.save(technician);
+            return;
+        }
+
+        Technician newTechnician = new Technician();
+        newTechnician.setName(name);
+        newTechnician.setSkill(skill);
+        newTechnician.setAvailable(true);
+        newTechnician.setRating(0.0);
+        newTechnician.setUser(user);
+
+        technicianRepo.save(newTechnician);
     }
 
     private boolean matches(String currentValue, String expectedValue) {

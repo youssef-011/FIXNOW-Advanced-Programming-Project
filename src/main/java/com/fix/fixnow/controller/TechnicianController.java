@@ -1,6 +1,8 @@
 package com.fix.fixnow.controller;
 
 import com.fix.fixnow.model.ServiceRequest;
+import com.fix.fixnow.model.Technician;
+import com.fix.fixnow.repository.TechnicianRepo;
 import com.fix.fixnow.security.SessionAuthConstants;
 import com.fix.fixnow.service.TechnicianService;
 import jakarta.servlet.http.HttpSession;
@@ -15,9 +17,11 @@ import java.util.List;
 public class TechnicianController {
 
     private final TechnicianService technicianService;
+    private final TechnicianRepo technicianRepo;
 
-    public TechnicianController(TechnicianService technicianService) {
+    public TechnicianController(TechnicianService technicianService, TechnicianRepo technicianRepo) {
         this.technicianService = technicianService;
+        this.technicianRepo = technicianRepo;
     }
 
     @GetMapping("/dashboard")
@@ -57,11 +61,23 @@ public class TechnicianController {
     }
 
     private Long currentTechnicianId(HttpSession session) {
-        Object technicianId = session.getAttribute(SessionAuthConstants.AUTH_USER_ID);
-        if (technicianId instanceof Long id) {
+        Long userId = currentUserId(session);
+        if (userId == null) {
+            return null;
+        }
+
+        Technician technician = technicianRepo.findByUser_Id(userId)
+                .orElseThrow(() -> new RuntimeException("Technician profile not found"));
+
+        return technician.getId();
+    }
+
+    private Long currentUserId(HttpSession session) {
+        Object userId = session.getAttribute(SessionAuthConstants.AUTH_USER_ID);
+        if (userId instanceof Long id) {
             return id;
         }
-        if (technicianId instanceof Number number) {
+        if (userId instanceof Number number) {
             return number.longValue();
         }
         return null;

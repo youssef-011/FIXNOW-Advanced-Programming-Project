@@ -16,6 +16,11 @@ public class Technician {
 
     private  double rating;
     private boolean available = true;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", unique = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private User user;
+
     @OneToMany(mappedBy = "technician")    // tech wa7ed yshof kaza request
     private List<ServiceRequest> requests;
 
@@ -60,6 +65,14 @@ public class Technician {
 
     public void setAvailable(boolean available) {
         this.available = available;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public List<ServiceRequest> getRequests() {
