@@ -16,6 +16,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 public class CustomerController {
 
@@ -33,7 +35,18 @@ public class CustomerController {
     public String dashboard(HttpSession session, Model model) {
         Long userId = currentUserId(session);
         if (userId != null) {
-            model.addAttribute("requests", customerService.getMyRequests(userId));
+            List<ServiceRequest> requests = customerService.getMyRequests(userId);
+            model.addAttribute("requests", requests);
+            model.addAttribute("activeRequestsCount", requests.stream().filter(request -> !ServiceRequest.COMPLETED.equals(request.getStatus())).count());
+            model.addAttribute("completedRequestsCount", requests.stream().filter(request -> ServiceRequest.COMPLETED.equals(request.getStatus())).count());
+            model.addAttribute("pendingReviewsCount", requests.stream().filter(request -> ServiceRequest.COMPLETED.equals(request.getStatus())).count());
+            model.addAttribute("nearbyTechniciansCount", technicianRepo.findByAvailable(true).size());
+
+            requests.stream().findFirst().ifPresent(request -> {
+                model.addAttribute("activeRequestTitle", "Request #" + request.getId());
+                model.addAttribute("activeRequestStatus", request.getStatus());
+            });
+
             Object customerName = session.getAttribute(SessionAuthConstants.AUTH_NAME);
             if (customerName != null) {
                 model.addAttribute("customerName", customerName);

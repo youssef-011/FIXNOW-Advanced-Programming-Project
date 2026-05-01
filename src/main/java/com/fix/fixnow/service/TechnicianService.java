@@ -24,7 +24,11 @@ public class TechnicianService {
     }
 
     public List<ServiceRequest> getAvailableRequests() {
-        return serviceRequestRepo.findByStatus("Pending");
+        return serviceRequestRepo.findByStatus(ServiceRequest.PENDING);
+    }
+
+    public List<ServiceRequest> getAssignedRequests(Long technicianId) {
+        return serviceRequestRepo.findByTechnician_Id(technicianId);
     }
 
     @Transactional

@@ -29,7 +29,7 @@ public class CustomerService {
     }
 
     public ServiceRequest createRequest(ServiceRequest request) {
-        request.setStatus("Pending");
+        request.setStatus(ServiceRequest.PENDING);
         return serviceRequestRepo.save(request);
     }
 

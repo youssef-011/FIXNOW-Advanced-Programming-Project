@@ -91,11 +91,29 @@
         <div class="form-panel">
             <p class="eyebrow">Recent services</p>
             <h2>Your service history</h2>
-            <div class="empty-state">
+            <div class="empty-state" th:if="${#lists.isEmpty(requests)}">
                 <span class="service-icon is-soft">0</span>
                 <h3>No requests yet</h3>
                 <p class="muted">Your recent services will appear here after requests are saved.</p>
                 <a class="btn" th:href="@{/customer/request/new}" href="/customer/request/new">Create your first request</a>
+            </div>
+            <div class="service-category-list" th:if="${!#lists.isEmpty(requests)}">
+                <article class="service-card" th:each="request : ${requests}">
+                    <span class="service-icon" th:text="${'#' + request.id}">#1</span>
+                    <h2 th:text="${request.category} ?: 'Service request'">Service request</h2>
+                    <p class="muted" th:text="${request.description} ?: 'No description provided'">No description provided</p>
+                    <dl class="summary-list">
+                        <div>
+                            <dt>Status</dt>
+                            <dd><span class="status-badge status-waiting" th:text="${request.status}">PENDING</span></dd>
+                        </div>
+                        <div>
+                            <dt>Technician</dt>
+                            <dd th:text="${request.technician != null ? request.technician.name : 'Not assigned yet'}">Not assigned yet</dd>
+                        </div>
+                    </dl>
+                    <a class="btn-secondary" th:href="@{/customer/request/{id}(id=${request.id})}" href="/customer/dashboard">View details</a>
+                </article>
             </div>
         </div>
     </section>

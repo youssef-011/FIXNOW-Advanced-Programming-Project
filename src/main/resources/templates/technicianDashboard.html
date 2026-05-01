@@ -58,17 +58,45 @@
         <article class="action-card">
             <span class="service-icon is-soft">JOB</span>
             <p class="eyebrow">Assigned jobs</p>
-            <h2>No assigned jobs yet</h2>
-            <p class="card-copy">Jobs accepted or assigned by a controller will appear in this area.</p>
-            <button class="btn-secondary" type="button" disabled>Accept job</button>
+            <h2 th:text="${#lists.isEmpty(assignedRequests)} ? 'No assigned jobs yet' : 'Your assigned jobs'">No assigned jobs yet</h2>
+            <p class="card-copy" th:if="${#lists.isEmpty(assignedRequests)}">Accepted and assigned jobs will appear in this area.</p>
+            <div class="service-category-list" th:if="${!#lists.isEmpty(assignedRequests)}">
+                <section class="service-card" th:each="request : ${assignedRequests}">
+                    <span class="service-icon" th:text="${'#' + request.id}">#1</span>
+                    <h3 th:text="${request.category} ?: 'Service request'">Service request</h3>
+                    <p class="muted" th:text="${request.description} ?: 'No description provided'">No description provided</p>
+                    <dl class="summary-list">
+                        <div><dt>Status</dt><dd th:text="${request.status}">ACCEPTED</dd></div>
+                        <div><dt>Customer</dt><dd th:text="${request.user != null ? request.user.name : 'Customer'}">Customer</dd></div>
+                        <div><dt>Location</dt><dd th:text="${request.location} ?: 'No location provided'">No location provided</dd></div>
+                    </dl>
+                    <form th:if="${request.status != 'COMPLETED'}" th:action="@{/technician/request/{id}/complete(id=${request.id})}" action="/technician/dashboard" method="post">
+                        <button class="btn-secondary" type="submit">Complete job</button>
+                    </form>
+                </section>
+            </div>
         </article>
 
         <article class="action-card">
             <span class="service-icon is-soft">QUEUE</span>
             <p class="eyebrow">Job queue</p>
-            <h2>No open queue items yet</h2>
-            <p class="card-copy">Available customer requests will appear after database-backed dispatch integration.</p>
-            <button class="btn-soft" type="button" disabled>Refresh queue</button>
+            <h2 th:text="${#lists.isEmpty(availableRequests)} ? 'No open queue items yet' : 'Available customer requests'">No open queue items yet</h2>
+            <p class="card-copy" th:if="${#lists.isEmpty(availableRequests)}">New pending customer requests will appear here.</p>
+            <div class="service-category-list" th:if="${!#lists.isEmpty(availableRequests)}">
+                <section class="service-card" th:each="request : ${availableRequests}">
+                    <span class="service-icon" th:text="${'#' + request.id}">#1</span>
+                    <h3 th:text="${request.category} ?: 'Service request'">Service request</h3>
+                    <p class="muted" th:text="${request.description} ?: 'No description provided'">No description provided</p>
+                    <dl class="summary-list">
+                        <div><dt>Status</dt><dd th:text="${request.status}">PENDING</dd></div>
+                        <div><dt>Customer</dt><dd th:text="${request.user != null ? request.user.name : 'Customer'}">Customer</dd></div>
+                        <div><dt>Location</dt><dd th:text="${request.location} ?: 'No location provided'">No location provided</dd></div>
+                    </dl>
+                    <form th:action="@{/technician/request/{id}/accept(id=${request.id})}" action="/technician/dashboard" method="post">
+                        <button class="btn-secondary" type="submit">Accept job</button>
+                    </form>
+                </section>
+            </div>
         </article>
     </section>
 </main>
