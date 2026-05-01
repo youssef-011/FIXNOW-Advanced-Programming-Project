@@ -14,6 +14,10 @@
 </div>
 
 <main class="page-shell section-stack">
+    <p class="form-message form-message-success" aria-live="polite" th:if="${successMessage}" th:text="${successMessage}">
+        Account created successfully
+    </p>
+
     <section class="hero-panel dashboard-hero">
         <div>
             <p class="eyebrow">Technician workspace</p>

@@ -14,10 +14,17 @@
 </div>
 
 <main class="page-shell section-stack">
+    <p class="form-message form-message-success" aria-live="polite" th:if="${successMessage}" th:text="${successMessage}">
+        Account created successfully
+    </p>
+
     <section class="hero-panel dashboard-hero">
         <div>
             <p class="eyebrow">Admin operations</p>
-            <h1>Manage the FixNow service network.</h1>
+            <h1>
+                Welcome,
+                <span th:text="${adminName} ?: 'Admin'">Admin</span>
+            </h1>
             <p class="lead">This dashboard is ready for real system metrics once controllers provide database-backed values.</p>
         </div>
         <span class="status-badge status-waiting" th:text="${systemStatus} ?: 'Awaiting system data'">Awaiting system data</span>

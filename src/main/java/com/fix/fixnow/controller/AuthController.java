@@ -12,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class AuthController {
@@ -38,7 +39,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String register(@Valid @ModelAttribute RegisterDTO registerDTO, BindingResult bindingResult, HttpSession session) {
+    public String register(@Valid @ModelAttribute RegisterDTO registerDTO, BindingResult bindingResult, HttpSession session, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return "redirect:/register?error";
         }
@@ -53,6 +54,7 @@ public class AuthController {
         try {
             User savedUser = authService.register(user);
             storeUserInSession(session, savedUser);
+            redirectAttributes.addFlashAttribute("successMessage", "Account created successfully");
             return redirectForRole(savedUser);
         } catch (RuntimeException ex) {
             return "redirect:/register?error";

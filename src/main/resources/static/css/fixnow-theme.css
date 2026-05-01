@@ -536,12 +536,30 @@ h3 {
     border: 1px solid color-mix(in srgb, var(--green) 26%, var(--border));
     border-radius: var(--radius-sm);
     font-size: 0.92rem;
+    animation: message-fade-in 180ms ease-out;
+}
+
+.form-message-success {
+    color: var(--green-strong);
+    background: var(--green-soft);
+    border-color: color-mix(in srgb, var(--green) 26%, var(--border));
 }
 
 .form-message-error {
     color: var(--danger);
     background: var(--danger-soft);
     border-color: color-mix(in srgb, var(--danger) 26%, var(--border));
+}
+
+@keyframes message-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .stats-row {

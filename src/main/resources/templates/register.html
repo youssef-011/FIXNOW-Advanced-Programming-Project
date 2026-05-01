@@ -51,10 +51,12 @@
         <h2 id="register-title">Registration details</h2>
         <p class="muted">Future controllers can validate these fields and decide the next page.</p>
 
-        <!-- TODO Controller: bind registration fields and provide registerMessage. -->
         <form class="form-grid" th:action="@{/register}" action="/register" method="post">
-            <p class="form-message" th:text="${registerMessage} ?: 'Registration messages will appear here.'">
-                Registration messages will appear here.
+            <p class="form-message form-message-error" aria-live="polite" th:if="${param.error}">
+                Registration failed. Please check your details or use another email.
+            </p>
+            <p class="form-message form-message-success" aria-live="polite" th:if="${param.success}">
+                Account created successfully.
             </p>
 
             <div class="field">
