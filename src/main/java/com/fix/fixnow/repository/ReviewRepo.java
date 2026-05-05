@@ -4,4 +4,5 @@ import com.fix.fixnow.model.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ReviewRepo extends JpaRepository<Review, Long> {
+    boolean existsByUser_IdAndTechnician_Id(Long userId, Long technicianId);
 }

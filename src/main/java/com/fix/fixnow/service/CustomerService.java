@@ -38,6 +38,12 @@ public class CustomerService {
     }
 
     public Review addReview(Review review) {
+        if (reviewRepo.existsByUser_IdAndTechnician_Id(
+                review.getUser().getId(),
+                review.getTechnician().getId())) {
+            throw new BadRequestException("You already reviewed this technician");
+        }
+
         ServiceRequest request = serviceRequestRepo
                 .findByUser_IdAndTechnician_Id(
                         review.getUser().getId(),

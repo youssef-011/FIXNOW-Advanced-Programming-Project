@@ -31,6 +31,11 @@ public class DispatchService {
         ServiceRequest request = serviceRequestRepo.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Sorry your order is currently unavailable, please wait"));
 
+        // ← status check
+        if (!request.getStatus().equals(ServiceRequest.PENDING)) {
+            throw new RuntimeException("Only PENDING requests can be assigned");
+        }
+
         if (request.getTechnician() != null) {
             throw new RuntimeException("This request is already assigned to a technician");
         }

@@ -36,6 +36,11 @@ public class TechnicianService {
         ServiceRequest request = serviceRequestRepo.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Sorry your order is currently unavailable, please wait"));
 
+        // ← status check
+        if (!request.getStatus().equals(ServiceRequest.PENDING)) {
+            throw new RuntimeException("Only PENDING requests can be accepted");
+        }
+
         if (request.getTechnician() != null) {
             throw new RuntimeException("This request is already taken");
         }
@@ -54,10 +59,17 @@ public class TechnicianService {
         ServiceRequest request = serviceRequestRepo.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Sorry your order is currently unavailable, please wait"));
 
+        // ← status check
+        if (!request.getStatus().equals("ACCEPTED") &&
+                !request.getStatus().equals("ASSIGNED")) {
+            throw new RuntimeException("Only ACCEPTED/ASSIGNED requests can be completed");
+        }
+
         if (request.getTechnician() == null ||
                 !request.getTechnician().getId().equals(technicianId)) {
             throw new RuntimeException("This request is not assigned to you");
         }
+
         request.getTechnician().setAvailable(true);
         request.setStatus("COMPLETED");
         return serviceRequestRepo.save(request);
