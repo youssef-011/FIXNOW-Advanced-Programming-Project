@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,14 +28,31 @@ public class TechnicianController {
 
     @GetMapping("/dashboard")
     public String dashboard(HttpSession session, Model model) {
-        List<ServiceRequest> availableRequests = technicianService.getAvailableRequests();
+        Long userId = currentUserId(session);
+        if (userId == null) {
+            return "redirect:/login";
+        }
+
+        List<ServiceRequest> availableRequests;
+        try {
+            availableRequests = technicianService.getAvailableRequests();
+        } catch (RuntimeException ex) {
+            availableRequests = List.of();
+            model.addAttribute("errorMessage", "Could not load available requests.");
+        }
         model.addAttribute("availableRequests", availableRequests);
         model.addAttribute("availableRequestsCount", availableRequests.size());
 
         Optional<Technician> technician = currentTechnician(session);
         if (technician.isPresent()) {
             Long technicianId = technician.get().getId();
-            List<ServiceRequest> assignedRequests = technicianService.getAssignedRequests(technicianId);
+            List<ServiceRequest> assignedRequests;
+            try {
+                assignedRequests = technicianService.getAssignedRequests(technicianId);
+            } catch (RuntimeException ex) {
+                assignedRequests = List.of();
+                model.addAttribute("errorMessage", "Could not load assigned requests.");
+            }
             model.addAttribute("assignedRequests", assignedRequests);
             model.addAttribute("assignedJobsCount", assignedRequests.stream().filter(request -> !ServiceRequest.COMPLETED.equals(request.getStatus())).count());
             model.addAttribute("completedJobsCount", assignedRequests.stream().filter(request -> ServiceRequest.COMPLETED.equals(request.getStatus())).count());
@@ -59,31 +77,45 @@ public class TechnicianController {
     }
 
     @PostMapping("/request/{id}/accept")
-    public String acceptRequest(@PathVariable("id") Long requestId, HttpSession session) {
+    public String acceptRequest(@PathVariable("id") Long requestId, HttpSession session, RedirectAttributes redirectAttributes) {
         Long technicianId = currentTechnicianId(session);
         if (technicianId == null) {
-            return "redirect:/login";
+            redirectAttributes.addFlashAttribute("errorMessage", "Technician profile not found.");
+            return "redirect:/technician/dashboard?error=profile_not_found";
         }
 
-        technicianService.acceptRequest(requestId, technicianId);
-        return "redirect:/technician/dashboard";
+        try {
+            technicianService.acceptRequest(requestId, technicianId);
+            redirectAttributes.addFlashAttribute("successMessage", "Request accepted successfully.");
+            return "redirect:/technician/dashboard?success=request_accepted";
+        } catch (RuntimeException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Could not accept request.");
+            return "redirect:/technician/dashboard?error=accept_failed";
+        }
     }
 
     @PostMapping("/request/{id}/complete")
-    public String completeRequest(@PathVariable("id") Long requestId, HttpSession session) {
+    public String completeRequest(@PathVariable("id") Long requestId, HttpSession session, RedirectAttributes redirectAttributes) {
         Long technicianId = currentTechnicianId(session);
         if (technicianId == null) {
-            return "redirect:/login";
+            redirectAttributes.addFlashAttribute("errorMessage", "Technician profile not found.");
+            return "redirect:/technician/dashboard?error=profile_not_found";
         }
 
-        technicianService.completeRequest(requestId, technicianId);
-        return "redirect:/technician/dashboard";
+        try {
+            technicianService.completeRequest(requestId, technicianId);
+            redirectAttributes.addFlashAttribute("successMessage", "Request completed successfully.");
+            return "redirect:/technician/dashboard?success=request_completed";
+        } catch (RuntimeException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Could not complete request.");
+            return "redirect:/technician/dashboard?error=complete_failed";
+        }
     }
 
     private Long currentTechnicianId(HttpSession session) {
         return currentTechnician(session)
                 .map(Technician::getId)
-                .orElseThrow(() -> new RuntimeException("Technician profile not found"));
+                .orElse(null);
     }
 
     private Optional<Technician> currentTechnician(HttpSession session) {
