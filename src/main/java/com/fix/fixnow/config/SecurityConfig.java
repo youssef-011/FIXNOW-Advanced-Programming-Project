@@ -11,7 +11,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.http.HttpStatus;
 
 @Configuration
 public class SecurityConfig {
@@ -32,19 +31,13 @@ public class SecurityConfig {
 
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                )
-                .authorizeHttpRequests(auth -> auth
+                .headers(h -> h.frameOptions(f -> f.sameOrigin()))
+                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
 
+                .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/",
-                                "/login",
-                                "/register",
-                                "/css/**",
-                                "/js/**",
-                                "/h2-console/**"
+                                "/", "/login", "/access-denied", "/error",
+                                "/css/**", "/js/**", "/h2-console/**"
                         ).permitAll()
 
                         .requestMatchers(HttpMethod.POST, "/api/auth/register", "/api/auth/login").permitAll()
@@ -61,19 +54,39 @@ public class SecurityConfig {
 
                         .anyRequest().authenticated()
                 )
-                .httpBasic(AbstractHttpConfigurer::disable)
-                .formLogin(AbstractHttpConfigurer::disable)
-                .logout(AbstractHttpConfigurer::disable)
-                .exceptionHandling(exceptions -> exceptions
-                        .authenticationEntryPoint((req, res, ex) ->
-                                res.sendError(HttpStatus.UNAUTHORIZED.value())
-                        )
-                        .accessDeniedHandler((req, res, ex) ->
-                                res.sendError(HttpStatus.FORBIDDEN.value())
-                        )
+
+                .formLogin(f -> f.loginPage("/login").permitAll())
+
+                .logout(l -> l.logoutUrl("/logout").logoutSuccessUrl("/login?logout"))
+
+                // ✅ CLEAN METHOD REFERENCES (NO WARNINGS)
+                .exceptionHandling(e -> e
+                        .authenticationEntryPoint(this::handleUnauthenticated)
+                        .accessDeniedHandler(this::handleAccessDenied)
                 )
+
+                .httpBasic(AbstractHttpConfigurer::disable)
+
                 .addFilterBefore(sessionAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    // ================= CLEAN HANDLERS =================
+
+    private void handleUnauthenticated(
+            jakarta.servlet.http.HttpServletRequest request,
+            jakarta.servlet.http.HttpServletResponse response,
+            org.springframework.security.core.AuthenticationException ex
+    ) throws java.io.IOException {
+        response.sendRedirect("/login");
+    }
+
+    private void handleAccessDenied(
+            jakarta.servlet.http.HttpServletRequest request,
+            jakarta.servlet.http.HttpServletResponse response,
+            org.springframework.security.access.AccessDeniedException ex
+    ) throws java.io.IOException {
+        response.sendRedirect("/access-denied");
     }
 }
