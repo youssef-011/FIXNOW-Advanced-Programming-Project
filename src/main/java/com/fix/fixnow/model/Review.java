@@ -1,6 +1,11 @@
 package com.fix.fixnow.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "reviews")
@@ -10,17 +15,25 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Min(1)
+    @Max(5)
     private int rating;
+
+    @NotBlank
+    @Size(max = 255)
     private String comment;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "technician_id")
     private Technician technician;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "request_id")
     private ServiceRequest request;

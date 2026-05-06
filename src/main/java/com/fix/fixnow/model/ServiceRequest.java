@@ -1,6 +1,10 @@
 package com.fix.fixnow.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "service_requests")
@@ -15,12 +19,28 @@ public class ServiceRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
+    @Size(max = 255)
     private String description;
+
+    // TODO: Migrate to an enum after services/repositories/templates stop depending on String status values.
+    @NotBlank
+    @Pattern(regexp = "PENDING|ACCEPTED|ASSIGNED|COMPLETED")
     private String status;
+
+    @NotBlank
+    @Size(max = 255)
     private String category;
+
+    @NotBlank
+    @Size(max = 255)
     private String location;
+
+    @NotBlank
+    @Size(max = 255)
     private String urgency;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

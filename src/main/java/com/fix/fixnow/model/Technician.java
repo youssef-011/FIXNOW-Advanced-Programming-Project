@@ -1,6 +1,11 @@
 package com.fix.fixnow.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
@@ -11,13 +16,22 @@ public class Technician {
 @Id
 @GeneratedValue(strategy = GenerationType.IDENTITY)
      private Long id; // primary key
+    @NotBlank
+    @Size(max = 100)
     private  String name;
+
+    @NotBlank
+    @Size(max = 100)
     private  String skill; // zay plumbing / electric
 
+    @DecimalMin("0.0")
+    @DecimalMax("5.0")
     private  double rating;
     private boolean available = true;
 
+    @NotNull
     @OneToOne(fetch = FetchType.LAZY)
+    // TODO: Enforce a real FK after existing technician rows are verified to have matching users.
     @JoinColumn(name = "user_id", unique = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private User user;
 

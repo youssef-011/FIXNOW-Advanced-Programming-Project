@@ -4,6 +4,7 @@ import com.fix.fixnow.model.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class RegisterDTO {
@@ -14,6 +15,7 @@ public class RegisterDTO {
 
     @NotBlank
     @Email
+    @Size(max = 254)
     private String email;
 
     @NotBlank
@@ -21,6 +23,8 @@ public class RegisterDTO {
     private String password;
 
     @NotBlank
+    @Pattern(regexp = "^\\+?[0-9\\s().-]{7,20}$")
+    @Size(max = 20)
     private String phone;
 
     @NotNull

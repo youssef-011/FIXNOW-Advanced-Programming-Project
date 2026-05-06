@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public class ReviewDTO {
 
@@ -14,6 +15,7 @@ public class ReviewDTO {
     private int rating;
 
     @NotBlank
+    @Size(max = 255)
     private String comment;
 
     @NotNull
