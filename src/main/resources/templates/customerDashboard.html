@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${pageTitle} ?: 'Customer Dashboard - FixNow'">Customer Dashboard - FixNow</title>
-    <link rel="stylesheet" th:href="@{/css/fixnow-theme.css}" href="../static/css/fixnow-theme.css">
+    <title th:text="${pageTitle} ?: 'Create Request - FixNow'">Create Request - FixNow</title>
+    <link rel="stylesheet" th:href="@{/css/fixnow-theme.css}" href="../../static/css/fixnow-theme.css">
 </head>
 <body>
 <div th:replace="~{layout/topbar-core :: topbarCore('customer')}">
@@ -13,119 +13,98 @@
     </header>
 </div>
 
-<main class="page-shell section-stack">
-    <p class="form-message form-message-success" aria-live="polite" th:if="${successMessage}" th:text="${successMessage}">
-        Account created successfully
-    </p>
+<main class="page-shell">
+    <div th:replace="~{layout/nav-bridge :: navBridge('Book a Service', 'Choose the repair type, describe the problem, and prepare the request for controller handling.', 'Create request')}">
+        <section class="page-bridge"><h1>Book a Service</h1></section>
+    </div>
 
-    <section class="hero-panel dashboard-hero">
-        <div>
-            <p class="eyebrow">Customer dashboard</p>
-            <h1>
-                Welcome,
-                <span th:text="${customerName} ?: 'Customer'">Customer</span>
-            </h1>
-            <p class="lead">Book home repairs, track active requests, and review completed services when real data is connected.</p>
-        </div>
-        <div class="button-row">
-            <a class="btn" th:href="@{/customer/request/new}" href="/customer/request/new">Create your first request</a>
-            <a class="btn-secondary" th:href="@{/customer/dashboard}" href="/customer/dashboard">Open tracking</a>
-        </div>
-    </section>
+    <section class="booking-layout">
+        <article class="form-panel">
+            <p class="eyebrow">Step 1</p>
+            <h2>Choose service category</h2>
+            <form class="form-grid" th:action="@{/customer/request/new}" action="/customer/request/new" method="post">
+                <p class="form-message" th:if="${requestMessage}" th:text="${requestMessage}">
+                    Request status messages will appear here.
+                </p>
 
-    <section class="stats-row" aria-label="Customer service statistics">
-        <article class="stat-card">
-            <span class="metric-icon">A</span>
-            <div><strong th:text="${activeRequestsCount} ?: '0'">0</strong><span>Active requests</span></div>
-        </article>
-        <article class="stat-card">
-            <span class="metric-icon">N</span>
-            <div><strong th:text="${nearbyTechniciansCount} ?: '0'">0</strong><span>Nearby technicians</span></div>
-        </article>
-        <article class="stat-card">
-            <span class="metric-icon">C</span>
-            <div><strong th:text="${completedRequestsCount} ?: '0'">0</strong><span>Completed services</span></div>
-        </article>
-        <article class="stat-card">
-            <span class="metric-icon">R</span>
-            <div><strong th:text="${pendingReviewsCount} ?: '0'">0</strong><span>Pending reviews</span></div>
-        </article>
-    </section>
-
-    <section class="grid grid-2">
-        <article class="action-card">
-            <div class="card-head">
-                <div>
-                    <span class="service-icon is-soft">REQ</span>
-                    <p class="eyebrow">Active request</p>
-                    <h2 th:text="${activeRequestTitle} ?: 'No active request yet'">No active request yet</h2>
-                    <p class="card-copy" th:text="${activeRequestStatus} ?: 'Create your first request to start live tracking.'">
-                        Create your first request to start live tracking.
-                    </p>
+                <div class="category-grid" aria-label="Service category cards">
+                    <label class="category-card">
+                        <input type="radio" name="category" value="PLUMBING" required>
+                        <span class="service-icon">PL</span>
+                        <strong>Plumbing</strong>
+                        <p class="muted">Leaks, sinks, drains</p>
+                    </label>
+                    <label class="category-card">
+                        <input type="radio" name="category" value="ELECTRICITY">
+                        <span class="service-icon">EL</span>
+                        <strong>Electricity</strong>
+                        <p class="muted">Power, lighting, sockets</p>
+                    </label>
+                    <label class="category-card">
+                        <input type="radio" name="category" value="AC_REPAIR">
+                        <span class="service-icon">AC</span>
+                        <strong>AC Repair</strong>
+                        <p class="muted">Cooling and filter issues</p>
+                    </label>
+                    <label class="category-card">
+                        <input type="radio" name="category" value="LOCKSMITH">
+                        <span class="service-icon">LK</span>
+                        <strong>Locksmith</strong>
+                        <p class="muted">Locks and access support</p>
+                    </label>
+                    <label class="category-card">
+                        <input type="radio" name="category" value="APPLIANCE">
+                        <span class="service-icon">AP</span>
+                        <strong>Appliance Repair</strong>
+                        <p class="muted">AC, fridge, washer</p>
+                    </label>
                 </div>
-                <span class="status-badge status-waiting" th:text="${activeRequestStatus} ?: 'Pending'">Pending</span>
-            </div>
-            <div class="button-row">
-                <a class="btn" th:href="@{/customer/request/new}" href="/customer/request/new">Create request</a>
-                <a class="btn-secondary" th:href="@{/customer/dashboard}" href="/customer/dashboard">View details</a>
-            </div>
+
+                <div class="field">
+                    <label for="location">Location</label>
+                    <input id="location" name="location" type="text" placeholder="Building, street, city, or nearby landmark" required>
+                </div>
+                <div class="field">
+                    <label for="urgency">Urgency</label>
+                    <select id="urgency" name="urgency" required>
+                        <option value="">Select urgency</option>
+                        <option value="NORMAL">Normal</option>
+                        <option value="URGENT">Urgent</option>
+                        <option value="EMERGENCY">Emergency</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" placeholder="Explain what happened, when it started, and any safety concern." required></textarea>
+                </div>
+
+                <div class="button-row">
+                    <button class="btn" type="submit">Submit request</button>
+                    <a class="btn-secondary" th:href="@{/customer/dashboard}" href="/customer/dashboard">Back to dashboard</a>
+                </div>
+            </form>
         </article>
 
-        <article class="action-card">
-            <span class="service-icon is-soft">TECH</span>
-            <p class="eyebrow">Nearby technicians</p>
-            <h2 th:text="${nearbyTechniciansLabel} ?: 'No technician matches yet'">No technician matches yet</h2>
-            <p class="card-copy">Technician availability will appear here after controller and database integration.</p>
-            <a class="btn-secondary" th:href="@{/customer/dashboard}" href="/customer/dashboard">Refresh dashboard</a>
-        </article>
-    </section>
-
-    <section aria-label="Service categories">
-        <p class="eyebrow">Popular service categories</p>
-        <div class="service-category-list">
-            <article class="service-card"><span class="service-icon">PL</span><h2>Plumbing</h2><p class="muted">Leaks, sinks, drains.</p></article>
-            <article class="service-card"><span class="service-icon">EL</span><h2>Electricity</h2><p class="muted">Power, lighting, sockets.</p></article>
-            <article class="service-card"><span class="service-icon">AC</span><h2>AC Repair</h2><p class="muted">Cooling and filter issues.</p></article>
-            <article class="service-card"><span class="service-icon">LK</span><h2>Locksmith</h2><p class="muted">Locks and access support.</p></article>
-            <article class="service-card"><span class="service-icon">AP</span><h2>Appliance Repair</h2><p class="muted">Home appliance service.</p></article>
-        </div>
-    </section>
-
-    <section class="table-panel">
-        <div class="form-panel">
-            <p class="eyebrow">Recent services</p>
-            <h2>Your service history</h2>
-            <div class="empty-state" th:if="${#lists.isEmpty(requests)}">
-                <span class="service-icon is-soft">0</span>
-                <h3>No requests yet</h3>
-                <p class="muted">Your recent services will appear here after requests are saved.</p>
-                <a class="btn" th:href="@{/customer/request/new}" href="/customer/request/new">Create your first request</a>
+        <aside class="summary-panel">
+            <p class="eyebrow">Booking flow</p>
+            <h2>How FixNow handles a request</h2>
+            <div class="steps-grid">
+                <div class="step-card"><strong>Choose</strong><p class="muted">Select the right service category.</p></div>
+                <div class="step-card"><strong>Describe</strong><p class="muted">Add urgency, location, and details.</p></div>
+                <div class="step-card"><strong>Track</strong><p class="muted">Status appears after controller integration.</p></div>
             </div>
-            <div class="service-category-list" th:if="${!#lists.isEmpty(requests)}">
-                <article class="service-card" th:each="request : ${requests}">
-                    <span class="service-icon" th:text="${'#' + request.id}">#1</span>
-                    <h2 th:text="${request.category} ?: 'Service request'">Service request</h2>
-                    <p class="muted" th:text="${request.description} ?: 'No description provided'">No description provided</p>
-                    <dl class="summary-list">
-                        <div>
-                            <dt>Status</dt>
-                            <dd><span class="status-badge status-waiting" th:text="${request.status}">PENDING</span></dd>
-                        </div>
-                        <div>
-                            <dt>Technician</dt>
-                            <dd th:text="${request.technician != null ? request.technician.name : 'Not assigned yet'}">Not assigned yet</dd>
-                        </div>
-                    </dl>
-                    <a class="btn-secondary" th:href="@{/customer/request/{id}(id=${request.id})}" href="/customer/dashboard">View details</a>
-                </article>
-            </div>
-        </div>
+            <dl class="summary-list summary-list-spaced">
+                <div><dt>Best for</dt><dd>Emergency home service booking</dd></div>
+                <div><dt>Current page role</dt><dd>Customer</dd></div>
+                <div><dt>View state</dt><dd>Ready for future controller data</dd></div>
+            </dl>
+        </aside>
     </section>
 </main>
 
 <div th:replace="~{layout/base-footer :: baseFooter}">
     <footer class="site-footer"><p>FixNow Spring Boot MVC view layer.</p></footer>
 </div>
-<script th:src="@{/js/fixnow-ui.js}" src="../static/js/fixnow-ui.js"></script>
+<script th:src="@{/js/fixnow-ui.js}" src="../../static/js/fixnow-ui.js"></script>
 </body>
 </html>

@@ -21,10 +21,7 @@
     <section class="hero-panel dashboard-hero">
         <div>
             <p class="eyebrow">Admin operations</p>
-            <h1>
-                Welcome,
-                <span th:text="${adminName} ?: 'Admin'">Admin</span>
-            </h1>
+            <h1>Welcome, <span th:text="${adminName} ?: 'Admin'">Admin</span></h1>
             <p class="lead">This dashboard is ready for real system metrics once controllers provide database-backed values.</p>
         </div>
         <span class="status-badge status-waiting" th:text="${systemStatus} ?: 'Awaiting system data'">Awaiting system data</span>
@@ -54,19 +51,19 @@
             <span class="service-icon is-soft">USR</span>
             <h2>User management</h2>
             <p class="card-copy">Review registered customers, technicians, and administrators after controller integration.</p>
-            <a class="btn-secondary" th:href="@{/admin/dashboard}" href="/admin/dashboard">Open users</a>
+            <a class="btn-secondary" th:href="@{/admin/users}" href="/admin/users">Open users</a>
         </article>
         <article class="action-card">
             <span class="service-icon is-soft">DSP</span>
             <h2>Dispatch overview</h2>
             <p class="card-copy">Monitor pending requests and technician matching when data becomes available.</p>
-            <a class="btn-secondary" th:href="@{/admin/dashboard}" href="/admin/dashboard">Open dispatch</a>
+            <a class="btn-secondary" th:href="@{/admin/dispatch}" href="/admin/dispatch">Open dispatch</a>
         </article>
         <article class="action-card">
             <span class="service-icon is-soft">REV</span>
             <h2>Review quality</h2>
             <p class="card-copy">Customer feedback and service quality indicators will appear here later.</p>
-            <a class="btn-secondary" th:href="@{/admin/dashboard}" href="/admin/dashboard">Open reviews</a>
+            <a class="btn-secondary" th:href="@{/admin/reviews}" href="/admin/reviews">Open reviews</a>
         </article>
     </section>
 

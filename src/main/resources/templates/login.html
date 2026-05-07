@@ -20,22 +20,11 @@
         <p class="lead">
             FixNow gives customers one trusted place to request urgent home repairs, follow status, and review completed work.
         </p>
-
         <div class="trust-grid" aria-label="Trust highlights">
-            <div class="trust-item">
-                <strong>Fast matching</strong>
-                <p class="muted">Prepared for technician availability data.</p>
-            </div>
-            <div class="trust-item">
-                <strong>Clear tracking</strong>
-                <p class="muted">Customers can follow each request state.</p>
-            </div>
-            <div class="trust-item">
-                <strong>Service history</strong>
-                <p class="muted">Ready for future completed-request data.</p>
-            </div>
+            <div class="trust-item"><strong>Fast matching</strong><p class="muted">Prepared for technician availability data.</p></div>
+            <div class="trust-item"><strong>Clear tracking</strong><p class="muted">Customers can follow each request state.</p></div>
+            <div class="trust-item"><strong>Service history</strong><p class="muted">Ready for future completed-request data.</p></div>
         </div>
-
         <div class="home-visual" aria-hidden="true">
             <span class="home-door"></span>
             <span class="home-window"></span>
@@ -51,9 +40,19 @@
         <h2 id="login-title">Sign in to FixNow</h2>
         <p class="muted">Use your account to open the correct dashboard.</p>
 
+        <!--
+            BACKEND NOTE:
+            This form submits field name="email", not "username".
+            WebSecurityConfig must include:
+                .usernameParameter("email")
+                .passwordParameter("password")
+        -->
         <form class="form-grid" th:action="@{/login}" action="/login" method="post">
             <p class="form-message form-message-error" aria-live="polite" th:if="${param.error}">
                 Invalid email or password.
+            </p>
+            <p class="form-message form-message-success" aria-live="polite" th:if="${param.logout}">
+                You have been logged out successfully.
             </p>
 
             <div class="field">

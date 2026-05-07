@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${pageTitle} ?: 'Add Review - FixNow'">Add Review - FixNow</title>
-    <link rel="stylesheet" th:href="@{/css/fixnow-theme.css}" href="../static/css/fixnow-theme.css">
+    <link rel="stylesheet" th:href="@{/css/fixnow-theme.css}" href="../../static/css/fixnow-theme.css">
 </head>
 <body>
 <div th:replace="~{layout/topbar-core :: topbarCore('customer')}">
@@ -15,9 +15,7 @@
 
 <main class="page-shell">
     <div th:replace="~{layout/nav-bridge :: navBridge('Rate Your Service', 'Submit feedback after a completed request.', 'Add review')}">
-        <section class="page-bridge">
-            <h1>Rate Your Service</h1>
-        </section>
+        <section class="page-bridge"><h1>Rate Your Service</h1></section>
     </div>
 
     <section class="review-layout">
@@ -28,11 +26,14 @@
                 Service summary will appear here after a completed request is selected.
             </p>
 
-            <!-- TODO Controller: receive rating and comment values when review submission is implemented. -->
             <form class="form-grid" th:action="@{/customer/review/new}" action="/customer/review/new" method="post">
-                <p class="form-message" th:text="${reviewMessage} ?: 'Review messages will appear here.'">
+                <p class="form-message" th:if="${reviewMessage}" th:text="${reviewMessage}">
                     Review messages will appear here.
                 </p>
+
+                <!-- FIXED: hidden inputs required by the controller -->
+                <input type="hidden" name="requestId"    th:value="${requestId}">
+                <input type="hidden" name="technicianId" th:value="${technicianId}">
 
                 <fieldset class="field rating-control">
                     <legend>Rating</legend>
@@ -51,15 +52,27 @@
 
                 <div class="button-row">
                     <button class="btn" type="submit">Submit review</button>
-                    <a class="btn-secondary" th:href="@{/customer/dashboard}" href="/customer/dashboard">Back to request</a>
+                    <a class="btn-secondary" th:href="@{/customer/dashboard}" href="/customer/dashboard">Back to dashboard</a>
                 </div>
             </form>
         </article>
 
-        <aside class="empty-state">
+        <!-- Dynamic aside: shows context if requestId present, warning if not -->
+        <aside class="empty-state" th:if="${requestId == null}">
             <span class="service-icon is-soft">REV</span>
             <h3>No completed service selected</h3>
-            <p class="muted">When a completed request is selected, review context can be shown here with controller-provided values.</p>
+            <p class="muted">Navigate here from a completed request to submit your review.</p>
+            <a class="btn-secondary" th:href="@{/customer/dashboard}" href="/customer/dashboard">Back to dashboard</a>
+        </aside>
+
+        <aside class="form-panel" th:if="${requestId != null}">
+            <p class="eyebrow">Service details</p>
+            <h3 th:text="${serviceSummary} ?: 'Completed service'">Completed service</h3>
+            <dl class="summary-list summary-list-spaced">
+                <div><dt>Request ID</dt><dd th:text="${requestId}">—</dd></div>
+                <div><dt>Technician</dt><dd th:text="${technicianName} ?: 'Not available'">—</dd></div>
+                <div><dt>Category</dt><dd th:text="${serviceCategory} ?: 'Not available'">—</dd></div>
+            </dl>
         </aside>
     </section>
 </main>
@@ -67,6 +80,6 @@
 <div th:replace="~{layout/base-footer :: baseFooter}">
     <footer class="site-footer"><p>FixNow Spring Boot MVC view layer.</p></footer>
 </div>
-<script th:src="@{/js/fixnow-ui.js}" src="../static/js/fixnow-ui.js"></script>
+<script th:src="@{/js/fixnow-ui.js}" src="../../static/js/fixnow-ui.js"></script>
 </body>
 </html>
