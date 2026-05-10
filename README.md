@@ -154,7 +154,6 @@ Client → Controller → Service → Repository → Database → Response → V
 
 ## 📂 Project Structure
 
-```text
 src/main/java/com/fix/fixnow
 ├── config
 ├── controller
@@ -186,14 +185,15 @@ src/main/resources/templates
 
 src/main/resources/static
 ├── css/fixnow-theme.css
-└── js/fixnow-ui.js
-
+└── js/fixnow-ui.js 
+---
  ## Security Model
 Session-based authentication (no JWT in this version)
 Role-based access control
 Custom authentication filter
 Protected routes per role
-Secure session tracking via server-side storage
+Secure session tracking via server-side storage 
+---
  ## Core Features Explained
 🔹 Service Request Lifecycle
 Customer creates request
@@ -210,6 +210,7 @@ Stored using Message entity and MessageRepo
 🔹 Request Timeline
 Tracks each stage of service request
 Implemented using RequestTimelineService
+---
  ## Design Principles
 Clean layered architecture
 Separation of concerns (MVC strict enforcement)
@@ -219,6 +220,7 @@ Service-driven business logic
 Repository abstraction (no raw SQL)
 Centralized exception handling
 Secure session management
+---
  ## Demo Readiness
 
 This system is validated for:
@@ -235,7 +237,8 @@ WebSocket real-time chat upgrade
 Payment integration system
 Advanced admin analytics dashboard
 Cloud deployment (AWS / Azure)
-Production-grade JWT authentication
+Production-grade JWT authentication 
+---
  ## Summary
 
 FixNow is a complete backend-structured Spring Boot system demonstrating:
