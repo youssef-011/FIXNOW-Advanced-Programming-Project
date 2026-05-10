@@ -26,14 +26,12 @@
                 Service summary will appear here after a completed request is selected.
             </p>
 
-            <form class="form-grid" th:action="@{/customer/review/new}" action="/customer/review/new" method="post">
+            <form class="form-grid" th:if="${requestId != null}" th:action="@{/customer/review/new}" action="/customer/review/new" method="post">
                 <p class="form-message" th:if="${reviewMessage}" th:text="${reviewMessage}">
                     Review messages will appear here.
                 </p>
 
-                <!-- FIXED: hidden inputs required by the controller -->
-                <input type="hidden" name="requestId"    th:value="${requestId}">
-                <input type="hidden" name="technicianId" th:value="${technicianId}">
+                <input type="hidden" name="requestId" th:value="${requestId}">
 
                 <fieldset class="field rating-control">
                     <legend>Rating</legend>

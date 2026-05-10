@@ -1,10 +1,21 @@
 package com.fix.fixnow.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 public class MessageDTO {
 
     private Long senderId;
+
+    @NotNull
     private Long receiverId;
+
+    @NotNull
     private Long requestId;
+
+    @NotBlank
+    @Size(max = 500)
     private String content;
 
     public Long getSenderId() {

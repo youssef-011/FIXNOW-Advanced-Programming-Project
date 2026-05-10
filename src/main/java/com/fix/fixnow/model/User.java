@@ -1,5 +1,6 @@
 package com.fix.fixnow.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -28,6 +29,7 @@ public class User {
 
     @NotBlank
     @Size(max = 100)
+    @JsonIgnore
     private String password;
 
     @Pattern(regexp = "^\\+?[0-9\\s().-]{7,20}$")

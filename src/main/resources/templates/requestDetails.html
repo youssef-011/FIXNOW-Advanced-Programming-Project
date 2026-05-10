@@ -34,11 +34,21 @@
             <p class="eyebrow">Tracking</p>
             <h2>Status timeline</h2>
             <div class="neutral-track">
-                <span class="service-icon is-soft">0</span>
-                <h3 th:text="${trackingState} ?: 'No tracking updates yet'">No tracking updates yet</h3>
-                <p class="muted">Tracking events will appear after the request is saved and assigned.</p>
+                <span class="service-icon is-soft">4</span>
+                <h3>Request progress</h3>
+                <p class="muted">PENDING -> ASSIGNED -> ACCEPTED -> COMPLETED</p>
                 <ol class="timeline">
-                    <li class="is-muted"><span class="timeline-dot" aria-hidden="true"></span><div><strong>Pending</strong><p class="muted">Waiting for controller-provided request status.</p></div></li>
+                    <li th:each="step : ${timelineSteps}"
+                        th:classappend="${step.active} ? ' is-active' : (${step.complete} ? ' is-complete' : ' is-muted')">
+                        <span class="timeline-dot" aria-hidden="true"></span>
+                        <div>
+                            <div class="timeline-heading">
+                                <strong th:text="${step.label}">Request submitted</strong>
+                                <span class="status-badge status-waiting" th:text="${step.status}">PENDING</span>
+                            </div>
+                            <p class="muted" th:text="${step.description}">The customer request is saved and waiting for dispatch.</p>
+                        </div>
+                    </li>
                 </ol>
             </div>
         </article>
@@ -69,8 +79,10 @@
 
         <article class="summary-panel">
             <p class="eyebrow">Actions</p>
-            <h2>Next step</h2>
-            <p class="muted">Create a request first, then this page can display status and assignment data.</p>
+            <h2 th:text="${nextStepTitle} ?: 'Next step'">Next step</h2>
+            <p class="muted" th:text="${nextStepDescription} ?: 'Create a request first, then this page can display status and assignment data.'">
+                Create a request first, then this page can display status and assignment data.
+            </p>
             <div class="button-row">
                 <a class="btn" th:href="@{/customer/request/new}" href="/customer/request/new">Create request</a>
                 <a class="btn-secondary" th:href="@{/customer/dashboard}" href="/customer/dashboard">Back to dashboard</a>

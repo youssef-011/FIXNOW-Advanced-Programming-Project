@@ -33,19 +33,16 @@ public class TechnicianController {
             return "redirect:/login";
         }
 
-        List<ServiceRequest> availableRequests;
-        try {
-            availableRequests = technicianService.getAvailableRequests();
-        } catch (RuntimeException ex) {
-            availableRequests = List.of();
-            model.addAttribute("errorMessage", "Could not load available requests.");
-        }
-        model.addAttribute("availableRequests", availableRequests);
-        model.addAttribute("availableRequestsCount", availableRequests.size());
-
         Optional<Technician> technician = currentTechnician(session);
         if (technician.isPresent()) {
             Long technicianId = technician.get().getId();
+            List<ServiceRequest> availableRequests;
+            try {
+                availableRequests = technicianService.getAvailableRequestsForTechnician(technicianId);
+            } catch (RuntimeException ex) {
+                availableRequests = List.of();
+                model.addAttribute("errorMessage", "Could not load available requests.");
+            }
             List<ServiceRequest> assignedRequests;
             try {
                 assignedRequests = technicianService.getAssignedRequests(technicianId);
@@ -53,19 +50,30 @@ public class TechnicianController {
                 assignedRequests = List.of();
                 model.addAttribute("errorMessage", "Could not load assigned requests.");
             }
+            boolean hasActiveAssignedJobs = technicianService.hasActiveAssignedJobs(technicianId);
+            model.addAttribute("availableRequests", availableRequests);
+            model.addAttribute("availableRequestsCount", availableRequests.size());
             model.addAttribute("assignedRequests", assignedRequests);
             model.addAttribute("assignedJobsCount", assignedRequests.stream().filter(request -> !ServiceRequest.COMPLETED.equals(request.getStatus())).count());
             model.addAttribute("completedJobsCount", assignedRequests.stream().filter(request -> ServiceRequest.COMPLETED.equals(request.getStatus())).count());
             model.addAttribute("availabilityStatus", technician.get().isAvailable() ? "Available" : "Busy");
+            model.addAttribute("technicianAvailable", technician.get().isAvailable());
+            model.addAttribute("hasActiveAssignedJobs", hasActiveAssignedJobs);
+            model.addAttribute("technicianSkill", technician.get().getSkill());
+            model.addAttribute("technicianDescription", technician.get().getDescription());
             if (technician.get().getReviews() != null) {
                 model.addAttribute("reviewCount", technician.get().getReviews().size());
             }
         } else {
+            model.addAttribute("availableRequests", List.of());
+            model.addAttribute("availableRequestsCount", 0);
             model.addAttribute("assignedRequests", List.of());
             model.addAttribute("assignedJobsCount", 0);
             model.addAttribute("completedJobsCount", 0);
             model.addAttribute("reviewCount", 0);
             model.addAttribute("availabilityStatus", "Profile not found");
+            model.addAttribute("technicianAvailable", false);
+            model.addAttribute("hasActiveAssignedJobs", false);
         }
 
         Object technicianName = session.getAttribute(SessionAuthConstants.AUTH_NAME);
@@ -74,6 +82,24 @@ public class TechnicianController {
         }
 
         return "technicianDashboard";
+    }
+
+    @PostMapping("/availability")
+    public String updateAvailability(@RequestParam boolean available, HttpSession session, RedirectAttributes redirectAttributes) {
+        Long technicianId = currentTechnicianId(session);
+        if (technicianId == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Technician profile not found.");
+            return "redirect:/technician/dashboard?error=profile_not_found";
+        }
+
+        try {
+            technicianService.updateAvailability(technicianId, available);
+            redirectAttributes.addFlashAttribute("successMessage", available ? "You are available for matching now." : "You are unavailable for new jobs now.");
+            return "redirect:/technician/dashboard?success=availability_updated";
+        } catch (RuntimeException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+            return "redirect:/technician/dashboard?error=availability_failed";
+        }
     }
 
     @PostMapping("/request/{id}/accept")

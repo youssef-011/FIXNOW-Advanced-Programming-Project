@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface MessageRepo extends JpaRepository<Message, Long> {
     List<Message> findByRequestId(Long requestId);
+    List<Message> findByRequest_IdOrderByTimestampAsc(Long requestId);
 }

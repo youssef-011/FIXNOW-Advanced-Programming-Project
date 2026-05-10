@@ -13,13 +13,16 @@ public class DispatchService {
 
     private final ServiceRequestRepo serviceRequestRepo;
     private final TechnicianRepo technicianRepo;
+    private final TechnicianMatchingService technicianMatchingService;
 
     public DispatchService(
             ServiceRequestRepo serviceRequestRepo,
-            TechnicianRepo technicianRepo
+            TechnicianRepo technicianRepo,
+            TechnicianMatchingService technicianMatchingService
     ) {
         this.serviceRequestRepo = serviceRequestRepo;
         this.technicianRepo = technicianRepo;
+        this.technicianMatchingService = technicianMatchingService;
     }
 
     public List<ServiceRequest> getAllRequests() {
@@ -43,9 +46,17 @@ public class DispatchService {
         Technician technician = technicianRepo.findById(technicianId)
                 .orElseThrow(() -> new RuntimeException("Technicians are currently busy"));
 
+        if (!technician.isAvailable()) {
+            throw new RuntimeException("Technician is not available");
+        }
+
+        if (!technicianMatchingService.matchesCategory(technician, request.getCategory())) {
+            throw new RuntimeException("Technician skill does not match this request category");
+        }
+
         request.setTechnician(technician);
         technician.setAvailable(false);
-        request.setStatus("ASSIGNED");
+        request.setStatus(ServiceRequest.ASSIGNED);
         return serviceRequestRepo.save(request);
     }
 
@@ -53,7 +64,11 @@ public class DispatchService {
         return technicianRepo.findByAvailable(true);
     }
 
+    public List<Technician> getAvailableTechniciansForRequest(ServiceRequest request) {
+        return technicianMatchingService.findAvailableMatches(request.getCategory());
+    }
+
     public List<ServiceRequest> getPendingRequests() {
-        return serviceRequestRepo.findByStatus(ServiceRequest.PENDING);
+        return serviceRequestRepo.findByStatusAndTechnicianIsNull(ServiceRequest.PENDING);
     }
 }

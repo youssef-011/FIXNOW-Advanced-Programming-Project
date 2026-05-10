@@ -7,6 +7,7 @@ import com.fix.fixnow.security.SessionAuthConstants;
 import com.fix.fixnow.service.AuthService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,6 +52,8 @@ public class AuthController {
             @RequestParam(required = false) String phone,
             @RequestParam(required = false) String password,
             @RequestParam(required = false) String role,
+            @RequestParam(required = false) String skill,
+            @RequestParam(required = false) String description,
             HttpSession session,
             RedirectAttributes redirectAttributes
     ) {
@@ -63,6 +66,10 @@ public class AuthController {
             redirectAttributes.addFlashAttribute("errorMessage", "Admin accounts cannot be created from public registration.");
             return "redirect:/register?error=role_not_allowed";
         }
+        if (Role.TECHNICIAN.equals(requestedRole) && (isBlank(skill) || isBlank(description))) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Please choose your profession and add a short technician description.");
+            return "redirect:/register?error=technician_profile_required&role=TECHNICIAN";
+        }
 
         User user = new User();
         user.setName(name.trim());
@@ -72,7 +79,7 @@ public class AuthController {
         user.setRole(requestedRole);
 
         try {
-            User savedUser = authService.register(user);
+            User savedUser = authService.register(user, skill, description);
             session.invalidate();
             redirectAttributes.addFlashAttribute("successMessage", "Account created successfully");
             return "redirect:/login?success=registered";
@@ -102,8 +109,9 @@ public class AuthController {
 
     @PostMapping("/logout")
     public String logout(HttpSession session) {
+        SecurityContextHolder.clearContext();
         session.invalidate();
-        return "redirect:/login";
+        return "redirect:/login?logout";
     }
 
     private String redirectForRole(User user) {
@@ -159,3 +167,5 @@ public class AuthController {
         session.setAttribute(SessionAuthConstants.AUTH_ROLE, user.getRole().name());
     }
 }
+
+

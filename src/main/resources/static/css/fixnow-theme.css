@@ -53,6 +53,10 @@
     box-sizing: border-box;
 }
 
+[hidden] {
+    display: none !important;
+}
+
 html {
     min-height: 100%;
 }
@@ -389,6 +393,94 @@ h3 {
     border-radius: var(--radius-sm);
 }
 
+.role-choice-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin: 22px 0;
+}
+
+.role-choice-card {
+    display: grid;
+    justify-items: start;
+    gap: 8px;
+    min-height: 184px;
+    padding: 18px;
+    color: var(--ink);
+    text-align: left;
+    background: var(--surface-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+}
+
+.role-choice-card:hover,
+.role-choice-card:focus-visible,
+.role-choice-card[aria-pressed="true"] {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--green) 20%, transparent);
+    transform: translateY(-1px);
+}
+
+.role-choice-card strong,
+.role-choice-card span {
+    display: block;
+}
+
+.form-section-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.form-section-head h3,
+.form-section-head p {
+    margin-bottom: 0;
+}
+
+.profession-control {
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
+
+.profession-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.profession-card {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: 7px;
+    min-height: 158px;
+    padding: 16px;
+    background: var(--surface-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+}
+
+.profession-card input {
+    position: absolute;
+    inset: 12px;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.profession-card:has(input:checked) {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--green) 20%, transparent);
+}
+
+.profession-card strong,
+.profession-card span {
+    display: block;
+}
+
 .visual-board {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -711,6 +803,21 @@ tr:last-child td {
     border-bottom: 0;
 }
 
+.timeline li.is-active strong {
+    color: var(--green-strong);
+}
+
+.timeline li.is-active .timeline-dot {
+    background: var(--green);
+    border-color: var(--green-soft);
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--green) 12%, transparent);
+}
+
+.timeline li.is-complete .timeline-dot {
+    background: var(--brand);
+    border-color: var(--olive-soft);
+}
+
 .timeline-dot {
     display: block;
     width: 16px;
@@ -724,6 +831,14 @@ tr:last-child td {
 .timeline li.is-muted .timeline-dot {
     background: var(--muted);
     border-color: var(--surface-muted);
+}
+
+.timeline-heading {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .category-grid {
@@ -993,13 +1108,21 @@ tr:last-child td {
 
 .availability-panel {
     display: grid;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: auto 1fr auto;
     gap: 16px;
     align-items: center;
     padding: 22px;
     background: var(--green-soft);
     border: 1px solid color-mix(in srgb, var(--green) 24%, var(--border));
     border-radius: var(--radius);
+}
+
+.availability-panel form {
+    justify-self: end;
+}
+
+.compact-timeline {
+    padding: 22px;
 }
 
 :root[dir="rtl"] body {
@@ -1051,17 +1174,28 @@ tr:last-child td {
     .grid-4,
     .grid-3,
     .grid-2,
-    .stats-row,
-    .trust-grid,
-    .steps-grid,
-    .visual-board,
-    .category-grid,
-    .service-category-list {
+        .stats-row,
+        .trust-grid,
+        .steps-grid,
+        .role-choice-grid,
+        .profession-grid,
+        .visual-board,
+        .category-grid,
+        .service-category-list {
         grid-template-columns: 1fr;
     }
 
     .dashboard-hero {
         align-items: stretch;
+    }
+
+    .availability-panel {
+        grid-template-columns: auto 1fr;
+    }
+
+    .availability-panel form {
+        grid-column: 1 / -1;
+        justify-self: start;
     }
 }
 

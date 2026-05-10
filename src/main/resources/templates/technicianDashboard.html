@@ -17,6 +17,9 @@
     <p class="form-message form-message-success" aria-live="polite" th:if="${successMessage}" th:text="${successMessage}">
         Account created successfully
     </p>
+    <p class="form-message form-message-error" aria-live="polite" th:if="${errorMessage}" th:text="${errorMessage}">
+        Error
+    </p>
 
     <section class="hero-panel dashboard-hero">
         <div>
@@ -32,8 +35,29 @@
         <div>
             <p class="eyebrow">Availability</p>
             <h2 th:text="${availabilityStatus} ?: 'Set availability from the technician controller later'">Set availability from the technician controller later</h2>
-            <p class="muted">This panel is visual only. It does not change backend state.</p>
+            <p class="muted" th:text="${technicianSkill} ?: 'Skill not set'">Skill not set</p>
+            <p class="muted" th:text="${technicianDescription} ?: 'Add a short description when registering as a technician.'">
+                Add a short description when registering as a technician.
+            </p>
+            <p class="muted" th:if="${hasActiveAssignedJobs}">
+                Complete active jobs before becoming available again.
+            </p>
         </div>
+        <form th:action="@{/technician/availability}" action="/technician/availability" method="post">
+            <input type="hidden" name="available" th:value="${technicianAvailable} ? 'false' : 'true'">
+            <button class="btn-secondary"
+                    type="submit"
+                    th:disabled="${!technicianAvailable and hasActiveAssignedJobs}"
+                    th:text="${technicianAvailable} ? 'Go unavailable' : 'Go available'">
+                Go unavailable
+            </button>
+        </form>
+    </section>
+
+    <section class="timeline-panel compact-timeline">
+        <p class="eyebrow">Request timeline</p>
+        <h2>PENDING -> ASSIGNED -> ACCEPTED -> COMPLETED</h2>
+        <p class="muted">Matched jobs arrive as assigned, then you accept them before completing the work.</p>
     </section>
 
     <section class="stats-row" aria-label="Technician job statistics">
@@ -71,8 +95,13 @@
                         <div><dt>Customer</dt><dd th:text="${request.user != null ? request.user.name : 'Customer'}">Customer</dd></div>
                         <div><dt>Location</dt><dd th:text="${request.location} ?: 'No location provided'">No location provided</dd></div>
                     </dl>
-                    <!-- FIXED: static fallback action now points to correct endpoint -->
-                    <form th:if="${request.status != 'COMPLETED'}"
+                    <form th:if="${request.status == 'ASSIGNED'}"
+                          th:action="@{/technician/request/{id}/accept(id=${request.id})}"
+                          th:attr="action='/technician/request/' + ${request.id} + '/accept'"
+                          method="post">
+                        <button class="btn-secondary" type="submit">Accept assigned job</button>
+                    </form>
+                    <form th:if="${request.status == 'ACCEPTED'}"
                           th:action="@{/technician/request/{id}/complete(id=${request.id})}"
                           th:attr="action='/technician/request/' + ${request.id} + '/complete'"
                           method="post">
@@ -97,7 +126,6 @@
                         <div><dt>Customer</dt><dd th:text="${request.user != null ? request.user.name : 'Customer'}">Customer</dd></div>
                         <div><dt>Location</dt><dd th:text="${request.location} ?: 'No location provided'">No location provided</dd></div>
                     </dl>
-                    <!-- FIXED: static fallback action corrected -->
                     <form th:action="@{/technician/request/{id}/accept(id=${request.id})}"
                           th:attr="action='/technician/request/' + ${request.id} + '/accept'"
                           method="post">

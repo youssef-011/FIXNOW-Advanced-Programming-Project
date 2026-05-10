@@ -16,14 +16,14 @@
 <main class="page-shell auth-layout">
     <section class="hero-panel">
         <p class="eyebrow">Join FixNow</p>
-        <h1>One account for booking, repairing, or managing work.</h1>
+        <h1>Choose how you want to use FixNow.</h1>
         <p class="lead">
-            The role selector prepares the view for customer, technician, and admin dashboards while staying presentation-only.
+            Customers book and track repairs. Technicians receive jobs that match their service skill.
         </p>
         <div class="trust-grid">
             <div class="trust-item"><strong>CUSTOMER</strong><p class="muted">Book and track services.</p></div>
             <div class="trust-item"><strong>TECHNICIAN</strong><p class="muted">Accept assigned jobs.</p></div>
-            <div class="trust-item"><strong>ADMIN</strong><p class="muted">Monitor platform health.</p></div>
+            <div class="trust-item"><strong>ADMIN</strong><p class="muted">Demo admins are created by the system seed.</p></div>
         </div>
         <div class="home-visual" aria-hidden="true">
             <span class="home-door"></span>
@@ -37,45 +37,132 @@
 
     <section class="form-panel" aria-labelledby="register-title">
         <p class="eyebrow">Create profile</p>
-        <h2 id="register-title">Registration details</h2>
-        <p class="muted">Future controllers can validate these fields and decide the next page.</p>
+        <h2 id="register-title">Select your role first</h2>
+        <p class="muted">Choose the account type, then complete the form prepared for that role.</p>
 
-        <form class="form-grid" th:action="@{/register}" action="/register" method="post">
-            <p class="form-message form-message-error" aria-live="polite" th:if="${param.error}">
-                Registration failed. Please check your details or use another email.
-            </p>
-            <p class="form-message form-message-success" aria-live="polite" th:if="${param.success}">
-                Account created successfully.
-            </p>
+        <p class="form-message form-message-error" aria-live="polite" th:if="${param.error}">
+            Registration failed. Please check your details or use another email.
+        </p>
+        <p class="form-message form-message-success" aria-live="polite" th:if="${param.success}">
+            Account created successfully.
+        </p>
 
-            <div class="field">
-                <label for="name">Full name</label>
-                <input id="name" name="name" type="text" autocomplete="name" placeholder="Your full name" required>
+        <div class="role-choice-grid" data-register-role-chooser aria-label="Choose registration role">
+            <button class="role-choice-card" type="button" data-register-role="CUSTOMER">
+                <span class="service-icon is-soft">CUS</span>
+                <strong>Customer account</strong>
+                <span class="muted">Book home services and review completed work.</span>
+            </button>
+            <button class="role-choice-card" type="button" data-register-role="TECHNICIAN">
+                <span class="service-icon is-soft">TEC</span>
+                <strong>Technician account</strong>
+                <span class="muted">Set your service skill and receive matching jobs.</span>
+            </button>
+        </div>
+
+        <form class="form-grid register-role-panel" th:action="@{/register}" action="/register" method="post" data-register-panel="CUSTOMER" hidden>
+            <input type="hidden" name="role" value="CUSTOMER">
+            <div class="form-section-head">
+                <button class="btn-soft" type="button" data-register-back>Change role</button>
+                <div>
+                    <p class="eyebrow">Customer registration</p>
+                    <h3>Create your booking account</h3>
+                </div>
             </div>
             <div class="field">
-                <label for="email">Email address</label>
-                <input id="email" name="email" type="email" autocomplete="email" placeholder="name@example.com" required>
+                <label for="customer-name">Full name</label>
+                <input id="customer-name" name="name" type="text" autocomplete="name" placeholder="Your full name" required>
             </div>
             <div class="field">
-                <label for="phone">Phone number</label>
-                <input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="+20 100 000 0000">
+                <label for="customer-email">Email address</label>
+                <input id="customer-email" name="email" type="email" autocomplete="email" placeholder="name@example.com" required>
             </div>
             <div class="field">
-                <label for="password">Password</label>
-                <input id="password" name="password" type="password" autocomplete="new-password" placeholder="Create a password" required>
-                <button class="btn-soft" type="button" data-password-toggle="#password">Show</button>
+                <label for="customer-phone">Phone number</label>
+                <input id="customer-phone" name="phone" type="tel" autocomplete="tel" placeholder="+20 100 000 0000" required>
             </div>
             <div class="field">
-                <label for="role">Role</label>
-                <select id="role" name="role" required>
-                    <option value="">Select role</option>
-                    <option value="CUSTOMER">CUSTOMER</option>
-                    <option value="TECHNICIAN">TECHNICIAN</option>
-                    <option value="ADMIN">ADMIN</option>
-                </select>
+                <label for="customer-password">Password</label>
+                <input id="customer-password" name="password" type="password" autocomplete="new-password" placeholder="Create a password" required>
+                <button class="btn-soft" type="button" data-password-toggle="#customer-password">Show</button>
             </div>
 
-            <button class="btn" type="submit">Create account</button>
+            <button class="btn" type="submit">Create customer account</button>
+        </form>
+
+        <form class="form-grid register-role-panel" th:action="@{/register}" action="/register" method="post" data-register-panel="TECHNICIAN" hidden>
+            <input type="hidden" name="role" value="TECHNICIAN">
+            <div class="form-section-head">
+                <button class="btn-soft" type="button" data-register-back>Change role</button>
+                <div>
+                    <p class="eyebrow">Technician registration</p>
+                    <h3>Create your technician profile</h3>
+                </div>
+            </div>
+            <div class="field">
+                <label for="tech-name">Full name</label>
+                <input id="tech-name" name="name" type="text" autocomplete="name" placeholder="Your full name" required>
+            </div>
+            <div class="field">
+                <label for="tech-email">Email address</label>
+                <input id="tech-email" name="email" type="email" autocomplete="email" placeholder="technician@example.com" required>
+            </div>
+            <div class="field">
+                <label for="tech-phone">Phone number</label>
+                <input id="tech-phone" name="phone" type="tel" autocomplete="tel" placeholder="+20 100 000 0000" required>
+            </div>
+            <fieldset class="field profession-control">
+                <legend>What is your profession?</legend>
+                <div class="profession-grid">
+                    <label class="profession-card">
+                        <input type="radio" name="skill" value="Plumbing" required>
+                        <span class="service-icon is-soft">PL</span>
+                        <strong>Plumbing</strong>
+                        <span class="muted">Leaks, sinks, drains, and pipes.</span>
+                    </label>
+                    <label class="profession-card">
+                        <input type="radio" name="skill" value="Electricity">
+                        <span class="service-icon is-soft">EL</span>
+                        <strong>Electricity</strong>
+                        <span class="muted">Power, lighting, switches, sockets.</span>
+                    </label>
+                    <label class="profession-card">
+                        <input type="radio" name="skill" value="AC Repair">
+                        <span class="service-icon is-soft">AC</span>
+                        <strong>AC Repair</strong>
+                        <span class="muted">Cooling, filters, and AC faults.</span>
+                    </label>
+                    <label class="profession-card">
+                        <input type="radio" name="skill" value="Locksmith">
+                        <span class="service-icon is-soft">LK</span>
+                        <strong>Locksmith</strong>
+                        <span class="muted">Locks, keys, and access support.</span>
+                    </label>
+                    <label class="profession-card">
+                        <input type="radio" name="skill" value="Appliance Repair">
+                        <span class="service-icon is-soft">AP</span>
+                        <strong>Appliance Repair</strong>
+                        <span class="muted">Fridges, washers, and appliances.</span>
+                    </label>
+                    <label class="profession-card">
+                        <input type="radio" name="skill" value="General Maintenance">
+                        <span class="service-icon is-soft">GM</span>
+                        <strong>General Maintenance</strong>
+                        <span class="muted">Mixed home repair support.</span>
+                    </label>
+                </div>
+            </fieldset>
+            <div class="field">
+                <label for="tech-description">Short work description</label>
+                <textarea id="tech-description" name="description" maxlength="500" placeholder="Write a short description about your experience, tools, service area, or the jobs you handle best." required></textarea>
+            </div>
+            <div class="field">
+                <label for="tech-password">Password</label>
+                <input id="tech-password" name="password" type="password" autocomplete="new-password" placeholder="Create a password" required>
+                <button class="btn-soft" type="button" data-password-toggle="#tech-password">Show</button>
+            </div>
+
+            <button class="btn" type="submit">Create technician account</button>
         </form>
 
         <p class="form-hint">

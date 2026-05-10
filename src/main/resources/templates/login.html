@@ -51,8 +51,14 @@
             <p class="form-message form-message-error" aria-live="polite" th:if="${param.error}">
                 Invalid email or password.
             </p>
+            <p class="form-message form-message-error" aria-live="polite" th:if="${errorMessage}" th:text="${errorMessage}">
+                Additional error detail from redirect.
+            </p>
             <p class="form-message form-message-success" aria-live="polite" th:if="${param.logout}">
                 You have been logged out successfully.
+            </p>
+            <p class="form-message form-message-success" aria-live="polite" th:if="${param.success}">
+                Account created successfully. Please log in.
             </p>
 
             <div class="field">

@@ -17,6 +17,9 @@
     <p class="form-message form-message-success" aria-live="polite" th:if="${successMessage}" th:text="${successMessage}">
         Account created successfully
     </p>
+    <p class="form-message form-message-error" aria-live="polite" th:if="${errorMessage}" th:text="${errorMessage}">
+        Error
+    </p>
 
     <section class="hero-panel dashboard-hero">
         <div>
@@ -50,30 +53,57 @@
         <article class="action-card">
             <span class="service-icon is-soft">USR</span>
             <h2>User management</h2>
-            <p class="card-copy">Review registered customers, technicians, and administrators after controller integration.</p>
-            <a class="btn-secondary" th:href="@{/admin/users}" href="/admin/users">Open users</a>
+            <p class="card-copy">Monitor registered users from the live database count.</p>
+            <a class="btn-secondary" th:href="@{/admin/dashboard}" href="/admin/dashboard">Refresh users</a>
         </article>
         <article class="action-card">
             <span class="service-icon is-soft">DSP</span>
             <h2>Dispatch overview</h2>
-            <p class="card-copy">Monitor pending requests and technician matching when data becomes available.</p>
-            <a class="btn-secondary" th:href="@{/admin/dispatch}" href="/admin/dispatch">Open dispatch</a>
+            <p class="card-copy">Assign pending customer requests to available technicians.</p>
+            <a class="btn-secondary" th:href="@{/admin/dashboard}" href="/admin/dashboard">Refresh dispatch</a>
         </article>
         <article class="action-card">
             <span class="service-icon is-soft">REV</span>
             <h2>Review quality</h2>
-            <p class="card-copy">Customer feedback and service quality indicators will appear here later.</p>
-            <a class="btn-secondary" th:href="@{/admin/reviews}" href="/admin/reviews">Open reviews</a>
+            <p class="card-copy">Review count is connected to completed service feedback.</p>
+            <a class="btn-secondary" th:href="@{/admin/dashboard}" href="/admin/dashboard">Refresh reviews</a>
         </article>
     </section>
 
-    <section class="activity-panel">
-        <p class="eyebrow">Recent activity</p>
-        <h2>System activity</h2>
-        <div class="empty-state centered">
+    <section class="activity-panel" aria-label="Dispatch queue">
+        <p class="eyebrow">Dispatch queue</p>
+        <h2>Pending requests</h2>
+        <div class="empty-state centered" th:if="${pendingRequests == null or #lists.isEmpty(pendingRequests)}">
             <span class="service-icon is-soft">0</span>
-            <h3>No activity yet</h3>
-            <p class="muted">New requests, technician actions, and reviews will appear here after real controller data is connected.</p>
+            <h3>No pending requests</h3>
+            <p class="muted">New customer requests will appear here when they are ready for assignment.</p>
+        </div>
+
+        <div class="service-category-list" th:if="${pendingRequests != null and !#lists.isEmpty(pendingRequests)}">
+            <section class="service-card" th:each="request : ${pendingRequests}">
+                <span class="service-icon" th:text="${'#' + request.id}">#1</span>
+                <h3 th:text="${request.category} ?: 'Service request'">Service request</h3>
+                <p class="muted" th:text="${request.description} ?: 'No description provided'">No description provided</p>
+                <dl class="summary-list">
+                    <div><dt>Customer</dt><dd th:text="${request.user != null ? request.user.name : 'Customer'}">Customer</dd></div>
+                    <div><dt>Urgency</dt><dd th:text="${request.urgency} ?: 'Not set'">Not set</dd></div>
+                    <div><dt>Location</dt><dd th:text="${request.location} ?: 'No location provided'">No location provided</dd></div>
+                </dl>
+                <div class="button-row"
+                     th:with="matchingTechnicians=${matchingTechniciansByRequestId[request.id]}"
+                     th:if="${matchingTechnicians != null and !#lists.isEmpty(matchingTechnicians)}">
+                    <form th:each="tech : ${matchingTechnicians}"
+                          th:action="@{/admin/request/{requestId}/assign/{technicianId}(requestId=${request.id}, technicianId=${tech.id})}"
+                          method="post">
+                        <button class="btn-secondary" type="submit" th:text="${'Assign ' + tech.name}">Assign technician</button>
+                    </form>
+                </div>
+                <p class="muted"
+                   th:with="matchingTechnicians=${matchingTechniciansByRequestId[request.id]}"
+                   th:if="${matchingTechnicians == null or #lists.isEmpty(matchingTechnicians)}">
+                    No matching available technicians right now.
+                </p>
+            </section>
         </div>
     </section>
 </main>

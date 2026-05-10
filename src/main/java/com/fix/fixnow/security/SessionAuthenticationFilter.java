@@ -6,7 +6,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -27,7 +29,10 @@ public class SessionAuthenticationFilter extends OncePerRequestFilter {
 
         HttpSession session = request.getSession(false);
 
-        if (session != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        Authentication existing = SecurityContextHolder.getContext().getAuthentication();
+        boolean missingRealUser = existing == null || existing instanceof AnonymousAuthenticationToken;
+
+        if (session != null && missingRealUser) {
 
             Object email = session.getAttribute(SessionAuthConstants.AUTH_EMAIL);
             Object role = session.getAttribute(SessionAuthConstants.AUTH_ROLE);

@@ -24,6 +24,9 @@ public class Technician {
     @Size(max = 100)
     private  String skill; // zay plumbing / electric
 
+    @Size(max = 500)
+    private String description;
+
     @DecimalMin("0.0")
     @DecimalMax("5.0")
     private  double rating;
@@ -63,6 +66,14 @@ public class Technician {
 
     public void setSkill(String skill) {
         this.skill = skill;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public double getRating() {

@@ -23,9 +23,4 @@ public class ErrorPageController implements ErrorController {
             return "error/500";
         }
     }
-
-    @RequestMapping("/access-denied")
-    public String accessDenied() {
-        return "error/403";
-    }
 }

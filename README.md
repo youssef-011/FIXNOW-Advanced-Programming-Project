@@ -61,11 +61,11 @@ User → View (JSP) → Controller → Model → Database → Response → View
 ##  Technologies Used
 
 * Java
-* Servlets
-* Spring Boot (basic setup)
-* JSP
-* JDBC
-* MySQL
+* Spring Boot MVC
+* Thymeleaf
+* Spring Security with session-based demo auth
+* Spring Data JPA
+* H2 in-memory database for the stable demo profile
 * Maven
 
 ---
@@ -83,15 +83,14 @@ src/main/java/com/fixnow
 src/main/resources
 ├── application.properties
 
-src/main/webapp/WEB-INF/jsp
-├── login.jsp
-├── register.jsp
-├── customerDashboard.jsp
-├── technicianDashboard.jsp
-├── createRequest.jsp
-├── viewRequests.jsp
-├── requestDetails.jsp
-└── addReview.jsp
+src/main/resources/templates
+├── login.html
+├── register.html
+├── customerDashboard.html
+├── technicianDashboard.html
+├── createRequest.html
+├── requestDetails.html
+└── addReview.html
 ```
 
 ---
@@ -100,8 +99,17 @@ src/main/webapp/WEB-INF/jsp
 
 * Basic project structure created
 * MVC architecture applied
-* Initial JSP pages implemented
-* Database connection using JDBC (basic setup)
+* Thymeleaf pages implemented for the core demo flows
+* Database access uses Spring Data JPA with H2 in-memory storage
+* Demo users are seeded on startup
+
+---
+
+## Demo Security Note
+
+This stable demo keeps CSRF disabled in `SecurityConfig` so the server-rendered forms
+and API smoke tests can run without token plumbing. Enable CSRF and add tokens before
+using the app outside a local/demo environment.
 
 ---
 
