@@ -54,7 +54,7 @@ The system is fully functional for demonstration purposes and academic evaluatio
 
 ---
 
-## 🧠 System Architecture
+##  System Architecture
 
 The project follows a **strict layered MVC architecture with separation of concerns**:
 
