@@ -187,3 +187,61 @@ src/main/resources/templates
 src/main/resources/static
 ├── css/fixnow-theme.css
 └── js/fixnow-ui.js
+
+ ## Security Model
+Session-based authentication (no JWT in this version)
+Role-based access control
+Custom authentication filter
+Protected routes per role
+Secure session tracking via server-side storage
+ ## Core Features Explained
+🔹 Service Request Lifecycle
+Customer creates request
+System matches technician
+Technician accepts request
+Work is completed
+Customer leaves review
+🔹 Technician Matching System
+Automatically assigns technicians based on availability and skill
+Managed by TechnicianMatchingService
+🔹 Chat System
+Real-time message exchange between customer and technician
+Stored using Message entity and MessageRepo
+🔹 Request Timeline
+Tracks each stage of service request
+Implemented using RequestTimelineService
+ ## Design Principles
+Clean layered architecture
+Separation of concerns (MVC strict enforcement)
+DTO-based communication (no entity leakage)
+Stateless controllers
+Service-driven business logic
+Repository abstraction (no raw SQL)
+Centralized exception handling
+Secure session management
+ ## Demo Readiness
+
+This system is validated for:
+
+Authentication flows
+Multi-role access control
+Request lifecycle stability
+Database consistency (JPA/Hibernate)
+Chat & messaging system
+Exception handling robustness
+ ## Future Improvements
+REST API expansion
+WebSocket real-time chat upgrade
+Payment integration system
+Advanced admin analytics dashboard
+Cloud deployment (AWS / Azure)
+Production-grade JWT authentication
+ ## Summary
+
+FixNow is a complete backend-structured Spring Boot system demonstrating:
+
+Enterprise-style layered architecture
+Secure session-based authentication
+Real-world service marketplace logic
+Clean MVC + DTO separation
+Scalable backend design principles
